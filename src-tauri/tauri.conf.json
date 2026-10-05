@@ -43,18 +43,37 @@
       "icons/icon.ico"
     ],
     "macOS": {
-      "minimumSystemVersion": "13.0"
+      "minimumSystemVersion": "13.0",
+      "entitlements": "./Entitlements.plist",
+      "hardenedRuntime": true
     },
     "linux": {
-      "deb": { "section": "utils", "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"] },
-      "rpm": { "depends": ["webkit2gtk4.1", "gtk3"] },
-      "appimage": { "bundleMediaFramework": false }
+      "deb": {
+        "section": "utils",
+        "depends": [
+          "libwebkit2gtk-4.1-0",
+          "libgtk-3-0"
+        ]
+      },
+      "rpm": {
+        "depends": [
+          "webkit2gtk4.1",
+          "gtk3"
+        ]
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      }
     },
     "windows": {
-      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
       "nsis": {
         "installMode": "currentUser",
-        "languages": ["English"],
+        "languages": [
+          "English"
+        ],
         "displayLanguageSelector": false
       }
     },

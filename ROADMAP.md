@@ -10,10 +10,11 @@ gesture, and later voice — only has to emit commands that already work.
 
 **Goal:** downloadable, signed installers for both platforms, built by CI from a tag.
 
-- [ ] GitHub Actions release workflow using `tauri-apps/tauri-action`, triggered on `v*` tags, drafting a GitHub Release.
+- [x] GitHub Actions release workflow using `tauri-apps/tauri-action`, triggered on `v*` tags, drafting a GitHub Release. See [docs/RELEASING.md](docs/RELEASING.md).
 - [ ] **Windows:** NSIS installer (already configured, per-user install) plus MSI. Code-sign with Authenticode (Azure Trusted Signing or an OV/EV cert) so SmartScreen does not block first launch.
-- [ ] **macOS:** universal binary (`--target universal-apple-darwin`) as a `.dmg`. Developer ID signing + notarization.
-- [ ] macOS hardened runtime needs the `com.apple.security.device.camera` entitlement (add an `Entitlements.plist`); `NSCameraUsageDescription` is already in `src-tauri/Info.plist`. Without the entitlement, a signed build silently gets no camera.
+- [x] **macOS:** universal binary (`--target universal-apple-darwin`) as a `.dmg`.
+- [ ] **macOS:** Developer ID signing + notarization — workflow is wired, needs the Apple secrets.
+- [x] macOS hardened runtime with the `com.apple.security.device.camera` entitlement (`src-tauri/Entitlements.plist`); `NSCameraUsageDescription` is in `src-tauri/Info.plist`. Without the entitlement, a signed build silently gets no camera.
 - [ ] Smoke-test each build on clean machines: borderless chrome + resize on Windows, traffic lights on macOS, opening a repo, diffs, camera permission prompt.
 - [ ] Optional: `tauri-plugin-updater` with signed update manifests once the first release is out.
 - [ ] Linux bundles come along for free from the same workflow; ship them as best-effort.

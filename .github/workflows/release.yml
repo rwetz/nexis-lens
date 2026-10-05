@@ -1,0 +1,130 @@
+name: Release
+
+# Builds Windows and macOS installers.
+#
+#   git tag v0.1.0 && git push origin v0.1.0   → draft GitHub Release with installers
+#   Actions → Release → Run workflow             → test build, installers as workflow artifacts only
+#
+# Signing is opt-in: with no signing secrets configured the builds are
+# unsigned but otherwise complete. See docs/RELEASING.md.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check-version:
+    name: Check version
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Tag matches package.json, Cargo.toml and tauri.conf.json
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(jq -r .version package.json)
+          conf=$(jq -r .version src-tauri/tauri.conf.json)
+          cargo=$(grep -m1 '^version' src-tauri/Cargo.toml | cut -d'"' -f2)
+          echo "tag=$tag package.json=$pkg tauri.conf.json=$conf Cargo.toml=$cargo"
+          if [ "$tag" != "$pkg" ] || [ "$tag" != "$conf" ] || [ "$tag" != "$cargo" ]; then
+            echo "::error::Tag v$tag does not match the app version in all three manifests."
+            exit 1
+          fi
+
+  build:
+    name: Build (${{ matrix.name }})
+    needs: check-version
+    # check-version is skipped for manual runs; build anyway.
+    if: ${{ !failure() && !cancelled() }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows x64
+            os: windows-latest
+            args: ""
+            rust-targets: ""
+          - name: macOS universal
+            os: macos-latest
+            args: "--target universal-apple-darwin"
+            rust-targets: "aarch64-apple-darwin,x86_64-apple-darwin"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4 # version comes from package.json "packageManager"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          key: ${{ matrix.os }}
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Only export Apple signing variables when the secrets exist: the Tauri
+      # bundler treats a set-but-empty APPLE_CERTIFICATE as "sign" and fails.
+      - name: Configure macOS signing
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "$APPLE_CERTIFICATE" ]; then
+            {
+              echo "APPLE_CERTIFICATE=$APPLE_CERTIFICATE"
+              echo "APPLE_CERTIFICATE_PASSWORD=$APPLE_CERTIFICATE_PASSWORD"
+              echo "APPLE_SIGNING_IDENTITY=$APPLE_SIGNING_IDENTITY"
+            } >> "$GITHUB_ENV"
+            echo "Code signing: enabled"
+            if [ -n "$APPLE_ID" ]; then
+              {
+                echo "APPLE_ID=$APPLE_ID"
+                echo "APPLE_PASSWORD=$APPLE_PASSWORD"
+                echo "APPLE_TEAM_ID=$APPLE_TEAM_ID"
+              } >> "$GITHUB_ENV"
+              echo "Notarization: enabled"
+            else
+              echo "::warning::APPLE_ID not set — build is signed but not notarized."
+            fi
+          else
+            echo "::warning::No Apple signing secrets — building an unsigned macOS app."
+          fi
+
+      - name: Build and publish
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: ${{ matrix.args }}
+          # Only tag pushes create a release; manual runs just build.
+          tagName: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
+          releaseName: Nexis Lens v__VERSION__
+          releaseBody: |
+            See the assets below to download Nexis Lens for Windows (`.exe` setup or `.msi`) or macOS (`.dmg`, universal for Apple Silicon and Intel).
+          releaseDraft: true
+          prerelease: false
+          uploadWorkflowArtifacts: true
+          workflowArtifactNamePattern: nexis-lens-[platform]-[arch]-[bundle]
