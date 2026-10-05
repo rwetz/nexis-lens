@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Gesture-augmented code, diff and documentation viewer for presenting.",
+  "license": "Apache-2.0",
   "packageManager": "pnpm@11.22.0",
   "type": "module",
   "scripts": {

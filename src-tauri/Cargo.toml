@@ -3,6 +3,7 @@ name = "nexis-lens"
 version = "0.1.0"
 description = "Gesture-augmented code, diff and documentation viewer for presenting."
 authors = ["Ryan Wetzstein"]
+license = "Apache-2.0"
 edition = "2021"
 
 [lib]

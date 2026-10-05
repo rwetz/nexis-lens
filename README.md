@@ -83,3 +83,7 @@ src-tauri/src/
   fs.rs                     open folder, gitignore-aware listing, read files
   git.rs                    status, diff, log, show via the git CLI
 ```
+
+## License
+
+[Apache-2.0](LICENSE), matching the rest of the Nexis family.

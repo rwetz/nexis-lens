@@ -1,6 +1,6 @@
 # Roadmap
 
-Three things are on the agenda, in order. Each builds on the command bus
+Two things are on the agenda, in order, plus one stretch goal. Each builds on the command bus
 (`src/modules/commands/registry.ts`): every input method — keyboard, mouse,
 gesture, and later voice — only has to emit commands that already work.
 
@@ -45,11 +45,11 @@ Everything downstream of recognition already exists and is exercised by the gest
 
 ---
 
-## 3. Voice control (planning)
+## Stretch goal: voice control
 
 **Goal:** spoken commands as a third input path — "next hunk", "zoom in", "open overview", "go to tracker dot ts" — for when hands are busy or out of frame.
 
-This is a planning item: produce a design and a spike before building it.
+A stretch goal, picked up only once releases and gestures are done. Start with a design and a spike before building it.
 
 - [ ] **Recognition engine.** The Web Speech API is not dependable inside Tauri's webviews (WebView2 and WKWebView), so plan for on-device recognition in Rust:
   - `whisper.cpp` via `whisper-rs` (tiny / base model) for free-form phrases, or
