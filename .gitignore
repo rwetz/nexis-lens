@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.local
+*.tsbuildinfo
+.DS_Store
+src-tauri/target
+src-tauri/gen/schemas
+# synced from @nexis/design by the postinstall step
+public/cursors/

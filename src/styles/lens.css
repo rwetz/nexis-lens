@@ -1,0 +1,247 @@
+/* Lens-specific surfaces: viewer zoom, diff colours, markdown prose.
+ * Everything keys off the design-system tokens so themes recolour it. */
+
+:root {
+  --lens-zoom: 1;
+  --lens-font-size: 14px;
+  --diff-add: color-mix(in oklch, oklch(0.72 0.17 150) 16%, transparent);
+  --diff-add-strong: color-mix(in oklch, oklch(0.72 0.17 150) 30%, transparent);
+  --diff-add-fg: oklch(0.52 0.15 150);
+  --diff-del: color-mix(in oklch, oklch(0.65 0.2 25) 14%, transparent);
+  --diff-del-strong: color-mix(in oklch, oklch(0.65 0.2 25) 28%, transparent);
+  --diff-del-fg: oklch(0.55 0.19 25);
+}
+.dark {
+  --diff-add: color-mix(in oklch, oklch(0.72 0.17 150) 14%, transparent);
+  --diff-add-fg: oklch(0.78 0.15 150);
+  --diff-del: color-mix(in oklch, oklch(0.65 0.2 25) 14%, transparent);
+  --diff-del-fg: oklch(0.74 0.15 25);
+}
+
+/* ── Code view ──────────────────────────────────────────────────────────── */
+.lens-code .cm-editor {
+  height: 100%;
+}
+.lens-code .cm-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(1 0 0 / 12%) transparent;
+}
+:root:not(.dark) .lens-code .cm-scroller {
+  scrollbar-color: oklch(0 0 0 / 12%) transparent;
+}
+
+/* ── Diff ───────────────────────────────────────────────────────────────── */
+.lens-diff {
+  font-size: calc(var(--lens-font-size) * var(--lens-zoom));
+}
+.lens-diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  line-height: 1.6;
+}
+.lens-diff-table td {
+  padding: 0;
+  vertical-align: top;
+}
+.lens-ln {
+  width: 3.6em;
+  padding-right: 0.75em !important;
+  text-align: right;
+  user-select: none;
+  color: color-mix(in oklch, var(--muted-foreground) 70%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+.lens-split .lens-ln {
+  width: auto;
+}
+.lens-sign {
+  width: 1.4em;
+  text-align: center;
+  user-select: none;
+  color: var(--muted-foreground);
+}
+.lens-code-cell {
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding-right: 1em !important;
+}
+.lens-split .lens-code-cell {
+  padding-left: 0.5em !important;
+}
+.lens-split td + td + td {
+  border-left: 1px solid var(--border);
+}
+.lens-line-add {
+  background: var(--diff-add);
+}
+.lens-line-add .lens-sign,
+.lens-line-add.lens-ln,
+tr.lens-line-add .lens-ln {
+  color: var(--diff-add-fg);
+}
+.lens-line-del {
+  background: var(--diff-del);
+}
+.lens-line-del .lens-sign,
+.lens-line-del.lens-ln,
+tr.lens-line-del .lens-ln {
+  color: var(--diff-del-fg);
+}
+.lens-empty {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 6px,
+    color-mix(in oklch, var(--muted) 60%, transparent) 6px 7px
+  );
+}
+.lens-hunk-header {
+  background: color-mix(in oklch, var(--muted) 70%, transparent);
+  border-top: 1px solid var(--border);
+}
+.lens-hunk-current::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in oklch, var(--brand) 70%, transparent),
+    inset 0 0 22px -8px color-mix(in oklch, var(--brand) 50%, transparent);
+}
+.lens-hunk-current .lens-hunk-header {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--brand) 16%, var(--muted));
+}
+
+/* ── Markdown prose ─────────────────────────────────────────────────────── */
+.lens-prose {
+  --lens-prose-size: calc(var(--lens-font-size) * 1.15);
+  font-size: calc(var(--lens-prose-size) * var(--lens-zoom));
+  max-width: 46em;
+  margin: 0 auto;
+  padding: 2em 2.5em 40vh;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+.lens-prose > :first-child {
+  margin-top: 0;
+}
+.lens-prose :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 650;
+  line-height: 1.25;
+  margin: 1.6em 0 0.6em;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 1em;
+}
+.lens-prose h1 {
+  font-size: 2em;
+  letter-spacing: -0.02em;
+}
+.lens-prose h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+.lens-prose h3 {
+  font-size: 1.22em;
+}
+.lens-prose h4 {
+  font-size: 1.05em;
+}
+.lens-prose :is(p, ul, ol, blockquote, table, pre) {
+  margin: 0 0 1em;
+}
+.lens-prose :is(ul, ol) {
+  padding-left: 1.5em;
+}
+.lens-prose ul {
+  list-style: disc;
+}
+.lens-prose ol {
+  list-style: decimal;
+}
+.lens-prose li + li {
+  margin-top: 0.25em;
+}
+.lens-prose li > :is(ul, ol) {
+  margin: 0.25em 0 0;
+}
+.lens-prose li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -1.3em;
+}
+.lens-prose input[type="checkbox"] {
+  margin-right: 0.45em;
+  accent-color: var(--brand);
+}
+.lens-prose a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--foreground) 35%, transparent);
+  text-underline-offset: 0.2em;
+}
+.lens-prose a:hover {
+  text-decoration-color: var(--foreground);
+}
+.lens-prose strong {
+  font-weight: 650;
+}
+.lens-prose blockquote {
+  padding: 0.1em 1em;
+  color: var(--muted-foreground);
+  border-left: 3px solid color-mix(in oklch, var(--brand) 60%, var(--border));
+}
+.lens-prose hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+.lens-prose img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+}
+.lens-prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+}
+.lens-prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  line-height: 1.6;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--muted) 70%, transparent);
+  border: 1px solid var(--border);
+}
+.lens-prose table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+.lens-prose :is(th, td) {
+  border: 1px solid var(--border);
+  padding: 0.4em 0.8em;
+}
+.lens-prose th {
+  font-weight: 600;
+  background: color-mix(in oklch, var(--muted) 60%, transparent);
+}
+
+/* ── Gesture affordances ────────────────────────────────────────────────── */
+/* While gestures are armed the main stage carries a soft brand ring, so the
+ * presenter can tell from across the room that the next gesture will act. */
+.lens-armed-ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 2px color-mix(in oklch, var(--brand) 65%, transparent),
+    inset 0 0 40px -12px color-mix(in oklch, var(--brand) 55%, transparent);
+}

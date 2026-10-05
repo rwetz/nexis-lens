@@ -1,0 +1,29 @@
+[package]
+name = "nexis-lens"
+version = "0.1.0"
+description = "Gesture-augmented code, diff and documentation viewer for presenting."
+authors = ["Ryan Wetzstein"]
+edition = "2021"
+
+[lib]
+name = "nexis_lens_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-os = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-window-state = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# gitignore-aware directory listing for the file tree
+ignore = "0.4"
+
+[profile.release]
+codegen-units = 1
+lto = true
+strip = true

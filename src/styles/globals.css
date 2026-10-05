@@ -1,0 +1,21 @@
+/* Nexis Lens stylesheet.
+ *
+ * The design core (tokens, chrome, cursors, brand primitives) comes from
+ * @nexis/design. We take the generic variant rather than globals.ide.css: the
+ * IDE variant carries xterm / LSP / debugger rules Lens has no use for, and
+ * the few CodeMirror rules a read-only viewer needs live in lens.css. */
+@import "@nexis/design/styles/globals.css";
+@import "@nexis/design/styles/code-highlight.css";
+@import "./lens.css";
+
+/* Tailwind v4 does not scan dependencies — without this the design package's
+ * WindowControls / ResizeHandles render unstyled. */
+@source "../../node_modules/@nexis/design/src";
+
+@theme inline {
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --color-diff-add: var(--diff-add);
+    --color-diff-add-fg: var(--diff-add-fg);
+    --color-diff-del: var(--diff-del);
+    --color-diff-del-fg: var(--diff-del-fg);
+}
