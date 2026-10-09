@@ -29,16 +29,17 @@ gesture, and later voice — only has to emit commands that already work.
 
 Everything downstream of recognition already exists and is exercised by the gesture simulator: dispatcher (arming, auto-disarm, confidence floor, cooldown, swipe-velocity floor), context-aware bindings, HUD, armed ring, camera calibration and framing. What is missing is the recogniser.
 
-- [ ] Add `@mediapipe/tasks-vision`; bundle the WASM runtime and the hand model under `public/` (no CDN — keeps the CSP closed and works offline).
-- [ ] Implement `GestureSource` in `src/modules/gestures/sources/mediapipe.ts` and register it (see the notes in `sources/index.ts`): `HandLandmarker` on the GPU delegate, driven by `requestVideoFrameCallback`.
-- [ ] Normalise landmarks into the framing box and mirror x when mirroring is on.
-- [ ] Pose classifiers, each with temporal smoothing:
+- [x] Add `@mediapipe/tasks-vision`; bundle the WASM runtime and the hand model under `public/` (no CDN — keeps the CSP closed and works offline).
+- [x] Implement `GestureSource` in `src/modules/gestures/sources/mediapipe.ts` and register it (see the notes in `sources/index.ts`): `HandLandmarker` on the GPU delegate, driven by `requestVideoFrameCallback`.
+- [x] Normalise landmarks into the framing box and mirror x when mirroring is on.
+- [x] Pose classifiers, each with temporal smoothing (first pass in `recognizer.ts`, untuned):
   - open palm held still ≥ `armHoldMs` → `arm`
   - open palm moving → `palm-move`
   - thumb–index distance → `pinch`, pinch-click → `select`
   - wrist velocity over a short window → `swipe`
   - `fist`, `palm-flip`, `two-hand-spread`, `point`
-- [ ] Report `FrameStats` every frame; profile against the 30 fps floor before adding gestures. If needed: drop to 480p, skip frames, or move inference into a worker with `OffscreenCanvas`.
+- [x] Report `FrameStats` every frame.
+- [ ] Profile in Settings → Gesture lab against the 30 fps floor before adding gestures. If needed: drop to 480p, skip frames, or move inference into a worker with `OffscreenCanvas`.
 - [ ] Tune defaults with real people talking with their hands — false positives matter more than misses.
 - [ ] Unit-test the classifiers on recorded landmark sequences so tuning does not regress.
 

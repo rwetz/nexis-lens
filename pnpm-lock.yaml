@@ -41,6 +41,9 @@ importers:
       '@lezer/highlight':
         specifier: ^1.2.5
         version: 1.2.5
+      '@mediapipe/tasks-vision':
+        specifier: 1.0.1
+        version: 1.0.1
       '@nexis/design':
         specifier: github:rwetz/nexis-design
         version: https://codeload.github.com/rwetz/nexis-design/tar.gz/28333833a237735012aaf906114725c31bf2185e(@hugeicons/core-free-icons@4.3.5)(@hugeicons/react@1.1.10(react@19.3.0))(@tauri-apps/api@2.12.1)(@tauri-apps/plugin-os@2.4.0)(clsx@2.1.1)(motion@12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwind-merge@3.7.0)
@@ -462,6 +465,9 @@ packages:
 
   '@marijn/find-cluster-break@1.0.4':
     resolution: {integrity: sha512-Wy0V7+SGUjnF9/TkiM1hKVDPj7jKXduPNboMVtHTA8dySMURWqfg/JZ9E2Sq8JgSJmkl7k7Qe9FLeMSrSraWmQ==}
+
+  '@mediapipe/tasks-vision@1.0.1':
+    resolution: {integrity: sha512-rvRE2FmAZ6ZxKSw7wq+e+jQDpN3t1B/tD2mJz9SmAzb1msoDkd4dMoE4wAh8Z30Um0PQwLiHr9QtomhmXk3aUQ==}
 
   '@modelcontextprotocol/sdk@1.32.0':
     resolution: {integrity: sha512-8BviX/hK4Gd2eL1KdTwm0gfl4d3wdoErW0Jd00h6nomUAtk6IJk5vwQJc6kfWtJTzN5OEV/lgIiJKI8fiDGAlA==}
@@ -4019,6 +4025,8 @@ snapshots:
       '@lezer/lr': 1.4.10
 
   '@marijn/find-cluster-break@1.0.4': {}
+
+  '@mediapipe/tasks-vision@1.0.1': {}
 
   '@modelcontextprotocol/sdk@1.32.0(zod@3.25.76)':
     dependencies:

@@ -7,3 +7,4 @@ src-tauri/target
 src-tauri/gen/schemas
 # synced from @nexis/design by the postinstall step
 public/cursors/
+public/mediapipe/

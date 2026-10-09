@@ -14,6 +14,8 @@ export function GestureController() {
   const cameraId = useGestures((s) => s.cameraId);
   const resolution = useGestures((s) => s.resolution);
   const targetFps = useGestures((s) => s.targetFps);
+  const delegate = useGestures((s) => s.delegate);
+  const labActive = useGestures((s) => s.labActive);
   const setRuntime = useGestures((s) => s.setRuntime);
 
   useCommand("gestures.toggle", () => {
@@ -28,6 +30,10 @@ export function GestureController() {
     if (!enabled) {
       setArmed(false);
       setRuntime({ status: "off", statusDetail: undefined, stats: null });
+      return;
+    }
+    if (labActive) {
+      setRuntime({ status: "starting", statusDetail: "Paused while the Gesture lab is using the camera." });
       return;
     }
     const source = createGestureSource();
@@ -69,7 +75,7 @@ export function GestureController() {
       stopStream(stream);
       if (video.current) video.current.srcObject = null;
     };
-  }, [enabled, cameraId, resolution, targetFps, setRuntime]);
+  }, [enabled, labActive, cameraId, resolution, targetFps, delegate, setRuntime]);
 
   return <video ref={video} className="hidden" muted playsInline aria-hidden />;
 }

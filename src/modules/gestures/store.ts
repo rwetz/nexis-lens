@@ -35,6 +35,10 @@ export type GestureConfig = {
   framing: { x: number; y: number; w: number; h: number };
   showHud: boolean;
   showSimulator: boolean;
+  /** Developer: draw tracked hands over the app while gesture mode is on. */
+  showTrackingOverlay: boolean;
+  /** Where hand-tracking inference runs. GPU falls back to CPU if unavailable. */
+  delegate: "GPU" | "CPU";
 };
 
 export type GestureFeedback = {
@@ -51,6 +55,8 @@ type GestureRuntime = {
   armed: boolean;
   stats: FrameStats | null;
   feedback: GestureFeedback | null;
+  /** The Gesture lab owns the camera; live gesture mode pauses meanwhile. */
+  labActive: boolean;
 };
 
 type GestureState = GestureConfig &
@@ -77,6 +83,8 @@ export const DEFAULT_GESTURE_CONFIG: GestureConfig = {
   framing: { x: 0.1, y: 0.05, w: 0.8, h: 0.9 },
   showHud: true,
   showSimulator: false,
+  showTrackingOverlay: false,
+  delegate: "GPU",
 };
 
 export const useGestures = create<GestureState>()(
@@ -87,6 +95,7 @@ export const useGestures = create<GestureState>()(
       armed: false,
       stats: null,
       feedback: null,
+      labActive: false,
       setConfig: (patch) => set(patch),
       resetConfig: () => set(DEFAULT_GESTURE_CONFIG),
       setRuntime: (patch) => set(patch),
@@ -95,7 +104,7 @@ export const useGestures = create<GestureState>()(
       name: "lens-gestures",
       version: 1,
       partialize: (s) => {
-        const { status: _s, statusDetail: _d, armed: _a, stats: _t, feedback: _f, setConfig: _1, resetConfig: _2, setRuntime: _3, ...config } = s;
+        const { status: _s, statusDetail: _d, armed: _a, stats: _t, feedback: _f, labActive: _l, setConfig: _1, resetConfig: _2, setRuntime: _3, ...config } = s;
         return config;
       },
     },
