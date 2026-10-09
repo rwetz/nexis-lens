@@ -104,7 +104,14 @@ export const useWorkspace = create<WorkspaceState>()(
     }),
     {
       name: "lens-workspace",
-      partialize: (s) => ({ recent: s.recent, workspace: s.workspace }),
+      // Only the recent list survives a restart: every launch starts on the
+      // welcome screen rather than reopening the last folder.
+      partialize: (s) => ({ recent: s.recent }),
+      // Older saves also stored the open workspace; never rehydrate it.
+      merge: (persisted, current) => ({
+        ...current,
+        recent: (persisted as { recent?: Workspace[] } | undefined)?.recent ?? current.recent,
+      }),
     },
   ),
 );

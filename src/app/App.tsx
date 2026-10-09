@@ -3,7 +3,6 @@
 // ║  Ryan Wetzstein · 2026               ║
 // ╚══════════════════════════════════════╝
 
-import { useEffect } from "react";
 import { MotionConfig } from "motion/react";
 import { ResizeHandles, ThemeProvider } from "@nexis/design";
 import { Toaster } from "@/components/ui/sonner";
@@ -12,6 +11,7 @@ import { useKeybindings } from "@/modules/commands/keymap";
 import { GestureController } from "@/modules/gestures/GestureController";
 import { ArmedRing, GestureHud } from "@/modules/gestures/GestureHud";
 import { GestureSimulator } from "@/modules/gestures/GestureSimulator";
+import { TrackingOverlay } from "@/modules/gestures/TrackingOverlay";
 import { Overview } from "@/modules/overview/Overview";
 import { SettingsDialog } from "@/modules/settings/SettingsDialog";
 import { Sidebar } from "@/modules/shell/Sidebar";
@@ -30,12 +30,6 @@ function Shell() {
   const workspace = useWorkspace((s) => s.workspace);
   const sidebarOpen = useUi((s) => s.sidebarOpen);
   const presenting = useUi((s) => s.presenting);
-
-  // Re-open the last workspace on launch (persisted by the store).
-  useEffect(() => {
-    const ws = useWorkspace.getState().workspace;
-    if (ws) void useWorkspace.getState().open(ws.root);
-  }, []);
 
   return (
     <div className="flex h-full flex-col">
@@ -59,6 +53,7 @@ function Shell() {
       {!presenting && <StatusBar />}
       <GestureController />
       <GestureSimulator />
+      <TrackingOverlay />
       <SettingsDialog />
     </div>
   );
