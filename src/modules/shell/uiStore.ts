@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type SidebarTab = "files" | "changes";
-export type SettingsSection = "appearance" | "viewer" | "gestures" | "camera" | "shortcuts";
+export type SettingsSection = "appearance" | "viewer" | "gestures" | "camera" | "lab" | "shortcuts";
 
 type UiState = {
   sidebarOpen: boolean;

@@ -42,26 +42,35 @@ view knows which device triggered it.
 
 ```
 camera ─▶ GestureSource ─▶ GestureEvent ─▶ dispatcher ─▶ bindings ─▶ runCommand ─▶ active view
-           (to build)       types.ts        arming,        context →
+           (MediaPipe)      types.ts        arming,        context →
                                             confidence,    command
                                             cooldown
 ```
 
 - `src/modules/gestures/types.ts` — the event vocabulary and the
   `GestureSource` interface a recogniser implements.
-- `src/modules/gestures/sources/index.ts` — the registry, and the plan for the
-  MediaPipe Hands implementation. **This is where hand tracking goes.**
-  Register a source and `GestureController` will open the camera and start it
-  when gesture mode is on.
+- `src/modules/gestures/sources/mediapipe.ts` — MediaPipe HandLandmarker
+  (GPU delegate, CPU fallback) driven by `requestVideoFrameCallback`; registered
+  in `sources/index.ts`. The WASM runtime and model are served from
+  `public/mediapipe/`, which `pnpm install` fills (`scripts/sync-mediapipe.mjs`).
+- `src/modules/gestures/recognizer.ts` — pure landmarks → pose → gesture
+  events logic (arm, palm-move, pinch, select, swipe, fist, flip, spread,
+  point). No camera or MediaPipe imports, so it can be driven by recordings.
 - `src/modules/gestures/dispatcher.ts` — confidence floor, arming gate,
   auto-disarm, discrete-gesture cooldown, swipe-velocity floor.
 - `src/modules/gestures/bindings.ts` — gesture × context → command table
   (also rendered in Settings → Gestures).
 - `GestureSimulator` (Settings → Gestures → Gesture simulator) fires synthetic
   events through the real dispatcher, so bindings, arming and the HUD can be
-  exercised before recognition exists.
+  exercised without a camera.
 - Settings → Camera opens a live preview, lets you drag the tracking box, and
   measures the frame rate the camera actually delivers against the 30 fps floor.
+- Settings → Gesture lab runs the real pipeline on its own camera stream, draws
+  the tracked hands, poses and recognised gestures over the preview, and
+  benchmarks it: camera vs processed fps, inference p50/p95, capture-to-result
+  latency, frames over budget, dropped frames, detection rate. A 10 s run gives
+  a summary you can copy as Markdown. Settings → Gestures → Tracking overlay
+  draws the same hand skeletons over the app while gesture mode is on.
 
 ## Layout
 

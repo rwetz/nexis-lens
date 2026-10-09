@@ -6,6 +6,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Camera01Icon,
   CommandIcon,
+  DashboardSpeed01Icon,
   PaintBoardIcon,
   Hold04Icon,
   TextIcon,
@@ -24,6 +25,7 @@ import { DEFAULT_GESTURE_CONFIG, useGestures } from "@/modules/gestures/store";
 import { useUi, type SettingsSection } from "@/modules/shell/uiStore";
 import { Segmented } from "@/modules/viewer/ViewerToolbar";
 import { CameraCalibration } from "./CameraCalibration";
+import { GestureLab } from "./GestureLab";
 import { useSettings } from "./store";
 
 const SECTIONS: { id: SettingsSection; label: string; icon: typeof TextIcon }[] = [
@@ -31,6 +33,7 @@ const SECTIONS: { id: SettingsSection; label: string; icon: typeof TextIcon }[] 
   { id: "viewer", label: "Viewer", icon: TextIcon },
   { id: "gestures", label: "Gestures", icon: Hold04Icon },
   { id: "camera", label: "Camera", icon: Camera01Icon },
+  { id: "lab", label: "Gesture lab", icon: DashboardSpeed01Icon },
   { id: "shortcuts", label: "Shortcuts", icon: CommandIcon },
 ];
 
@@ -66,6 +69,7 @@ export function SettingsDialog() {
           {section === "viewer" && <Viewer />}
           {section === "gestures" && <Gestures />}
           {section === "camera" && <CameraCalibration />}
+          {section === "lab" && <GestureLab />}
           {section === "shortcuts" && <Shortcuts />}
         </div>
       </DialogContent>
@@ -247,6 +251,9 @@ function Gestures() {
       </Field>
       <Field label="Gesture simulator" hint="Developer panel that fires synthetic gestures through the real dispatcher.">
         <Switch checked={g.showSimulator} onCheckedChange={(showSimulator) => set({ showSimulator })} />
+      </Field>
+      <Field label="Tracking overlay" hint="Developer: draw tracked hands and their recognised pose over the app, mapped through the tracking area.">
+        <Switch checked={g.showTrackingOverlay} onCheckedChange={(showTrackingOverlay) => set({ showTrackingOverlay })} />
       </Field>
 
       <h3 className="mb-2 mt-6 text-sm font-semibold">Bindings</h3>
