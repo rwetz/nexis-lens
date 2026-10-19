@@ -16,7 +16,7 @@
     --sidebar: oklch(0.987 0.002 197.1); --ring: oklch(0.488 0.243 264.376);
     --diff-add: color-mix(in oklch, oklch(0.72 0.17 150) 16%, transparent); --diff-add-fg: oklch(0.52 0.15 150);
     --diff-del: color-mix(in oklch, oklch(0.65 0.2 25) 14%, transparent); --diff-del-fg: oklch(0.55 0.19 25);
-    --radius: 0.625rem;
+    --radius: 0.625rem; --gesture: oklch(0.66 0.17 42);
     --font-sans: 'Geist','Geist Variable','Inter',system-ui,sans-serif;
     --font-mono: 'Geist Mono','JetBrains Mono',ui-monospace,Menlo,monospace;
     --font-heading: 'Space Grotesk','Geist',system-ui,sans-serif;
@@ -37,7 +37,7 @@
   code { font-family:var(--font-mono); font-size:.9em; background:var(--muted); padding:1px 5px; border-radius:4px; }
   a { color:var(--foreground); text-underline-offset:3px; }
   p.sub { color:var(--muted-foreground); margin:0 0 16px; }
-  .task { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:24px; align-items:start; margin-top:16px; }
+  .task { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:24px; align-items:start; margin-top:16px; }
   @media (max-width:760px){ .task { grid-template-columns:1fr; } }
   .frames { display:flex; flex-direction:column; gap:14px; }
   .frame { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; font:12px/1.4 var(--font-sans); box-shadow:0 1px 2px oklch(0 0 0 / 6%); }
@@ -60,11 +60,161 @@
   .rules b { font-weight:600; }
   nav.toc { margin:12px 0; display:flex; flex-wrap:wrap; gap:6px 14px; font-size:14px; }
   ol li { margin-bottom:6px; }
-  .gcards { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .gcards { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:10px; }
   .gcard { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:10px; display:flex; flex-direction:column; gap:2px; font-size:12px; }
   .gcard b { font-size:13px; margin-top:4px; } .gcard span, .gcard em { color:var(--muted-foreground); font-style:normal; }
   .gcard .why { font-size:11px; margin-top:4px; border-top:1px solid var(--border); padding-top:4px; }
   .refs { font-size:13px; color:var(--muted-foreground); } .refs a, .gcard a { color:var(--foreground); }
+  /* App mock-ups. Fixed dark palette taken from the running app, so they read the same in both page themes. */
+  .shots { display:flex; flex-direction:column; gap:18px; }
+  figure.shot { margin:0; }
+  figure.shot figcaption { font-size:12px; font-weight:600; margin:0 0 6px; color:var(--muted-foreground); }
+  figure.shot figcaption b { color:var(--foreground); }
+  .mock { --m-bg:#0d1012; --m-panel:#121618; --m-raised:#1a1f22; --m-hover:#22282b; --m-border:rgba(255,255,255,.08);
+    --m-fg:#eef1f2; --m-dim:#8b959a; --m-faint:#5b6469; --m-accent:#ec7a4f; --m-blue:#7aa2ff;
+    --m-add:rgba(74,190,120,.16); --m-add-fg:#7fd6a0; --m-del:rgba(235,95,80,.15); --m-del-fg:#f09a8c;
+    position:relative; background:var(--m-bg); color:var(--m-fg); border:1px solid #2a3034; border-radius:10px; overflow:hidden;
+    font:11px/1.45 var(--font-sans); box-shadow:0 8px 24px oklch(0 0 0 / 18%); }
+  .mock svg.i { width:12px; height:12px; flex:none; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-2px; }
+  .m-mono { font-family:var(--font-mono); }
+  .m-dim { color:var(--m-dim); } .m-faint { color:var(--m-faint); }
+  .m-top { display:flex; align-items:center; gap:7px; height:30px; padding:0 10px; border-bottom:1px solid var(--m-border); background:var(--m-panel); }
+  .m-logo { width:16px; height:16px; border-radius:4px; background:#fff; display:grid; place-items:center; color:var(--m-accent); }
+  .m-logo svg.i { width:11px; height:11px; stroke-width:2.2; }
+  .m-pill { border:1px solid var(--m-border); border-radius:999px; padding:1px 7px; font-family:var(--font-mono); font-size:10px; color:var(--m-dim); display:inline-flex; gap:4px; align-items:center; }
+  .m-icons { margin-left:auto; display:flex; gap:9px; color:var(--m-dim); align-items:center; }
+  .m-icons .on { background:var(--m-hover); border-radius:5px; padding:3px; margin:-3px; color:var(--m-fg); }
+  .m-win { display:flex; gap:10px; color:var(--m-dim); margin-left:10px; }
+  .m-body { display:grid; grid-template-columns:150px minmax(0,1fr); min-height:220px; }
+  .m-body.full { grid-template-columns:minmax(0,1fr); }
+  .m-side { background:var(--m-panel); border-right:1px solid var(--m-border); padding:6px; min-width:0; }
+  .m-seg { display:flex; align-items:center; gap:2px; margin-bottom:6px; }
+  .m-seg span { padding:3px 8px; border-radius:6px; color:var(--m-dim); font-weight:500; }
+  .m-seg span.on { color:var(--m-fg); background:var(--m-raised); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); }
+  .m-seg .i { margin-left:auto; color:var(--m-dim); }
+  .m-file { display:flex; align-items:center; gap:6px; padding:3px 6px; border-radius:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .m-file .i { color:var(--m-dim); }
+  .m-file.on { background:var(--m-hover); }
+  .m-file.in1 { padding-left:16px; } .m-file.in2 { padding-left:26px; }
+  .m-head { display:flex; justify-content:space-between; font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--m-dim); font-weight:600; padding:6px 6px 3px; }
+  .m-commit { padding:3px 6px; display:grid; grid-template-columns:10px 1fr; column-gap:5px; }
+  .m-commit .i { color:var(--m-dim); width:9px; margin-top:2px; }
+  .m-commit div { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .m-commit small { grid-column:2; font-family:var(--font-mono); font-size:9px; color:var(--m-dim); }
+  .m-commit.on { background:var(--m-hover); border-radius:5px; }
+  .m-badge { margin-left:auto; font-family:var(--font-mono); font-size:9px; font-weight:600; }
+  .m-badge.mod { color:#e6c25a; } .m-badge.new { color:var(--m-add-fg); } .m-badge.del { color:var(--m-del-fg); }
+  .m-main { display:flex; flex-direction:column; min-width:0; }
+  .m-tabs { display:flex; height:26px; border-bottom:1px solid var(--m-border); background:var(--m-panel); overflow:hidden; }
+  .m-tab { display:flex; align-items:center; gap:6px; padding:0 10px; color:var(--m-dim); border-right:1px solid var(--m-border); white-space:nowrap; }
+  .m-tab.on { color:var(--m-fg); background:var(--m-bg); box-shadow:inset 0 2px 0 var(--m-accent); font-weight:500; }
+  .m-tab .x { color:var(--m-faint); }
+  .m-path { display:flex; align-items:center; gap:8px; padding:4px 10px; border-bottom:1px solid var(--m-border); font-family:var(--font-mono); font-size:10px; color:var(--m-dim); }
+  .m-tools { margin-left:auto; display:flex; align-items:center; gap:8px; font-family:var(--font-sans); }
+  .m-toggle { display:inline-flex; background:var(--m-raised); border-radius:7px; padding:2px; }
+  .m-toggle span { padding:1px 7px; border-radius:5px; color:var(--m-dim); display:inline-flex; gap:4px; align-items:center; }
+  .m-toggle span.on { background:var(--m-hover); color:var(--m-fg); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+  .m-doc { padding:12px 18px; flex:1; min-height:0; }
+  .m-doc h4 { font-size:17px; margin:0 0 6px; font-weight:700; letter-spacing:-.01em; }
+  .m-doc h5 { font-size:13px; margin:10px 0 4px; font-weight:700; border-bottom:1px solid var(--m-border); padding-bottom:3px; }
+  .m-doc p { margin:0 0 6px; color:#cfd5d8; }
+  .m-doc code, .m-k { font-family:var(--font-mono); font-size:10px; background:var(--m-raised); color:var(--m-fg); padding:0 4px; border-radius:4px; }
+  .m-table { border-collapse:collapse; font-size:10px; margin-top:4px; }
+  .m-table td, .m-table th { border:1px solid var(--m-border); padding:2px 8px; text-align:left; }
+  .m-table th { background:var(--m-raised); }
+  .m-code { font:10px/1.6 var(--font-mono); padding:6px 0; flex:1; }
+  .m-code div { display:grid; grid-template-columns:30px 1fr; white-space:pre; overflow:hidden; }
+  .m-code div > i { font-style:normal; color:var(--m-faint); text-align:right; padding-right:10px; }
+  .m-code .kw { color:#c792ea; } .m-code .st { color:#a5d6a7; } .m-code .fn { color:#82aaff; } .m-code .cm { color:var(--m-faint); }
+  .m-code mark { background:rgba(236,122,79,.28); color:inherit; border-radius:2px; } .m-code mark.cur { background:var(--m-accent); color:#111; }
+  .m-search { display:flex; align-items:center; gap:6px; margin:6px 10px 0; padding:4px 6px; background:var(--m-raised); border:1px solid var(--m-border); border-radius:7px; }
+  .m-input { flex:1; background:var(--m-bg); border:1px solid rgba(236,122,79,.6); border-radius:5px; padding:1px 6px; font-family:var(--font-mono); }
+  .m-btn { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--m-border); background:var(--m-raised); color:var(--m-fg); border-radius:7px; padding:3px 9px; font-weight:500; white-space:nowrap; }
+  .m-btn.fill { background:var(--m-fg); color:#111; border-color:var(--m-fg); }
+  .m-btn.lg { padding:6px 14px; font-size:12px; }
+  .m-status { display:flex; align-items:center; gap:12px; height:22px; padding:0 10px; border-top:1px solid var(--m-border); background:var(--m-panel); font-size:10px; color:var(--m-dim); }
+  .m-status .r { margin-left:auto; display:flex; gap:12px; align-items:center; }
+  .m-dot { width:6px; height:6px; border-radius:50%; background:var(--m-faint); display:inline-block; }
+  .m-dot.live { background:var(--m-add-fg); box-shadow:0 0 0 3px rgba(127,214,160,.2); }
+  .m-split { display:grid; grid-template-columns:1fr 1fr; font:10px/1.6 var(--font-mono); }
+  .m-split > div { border-right:1px solid var(--m-border); }
+  .m-split > div > div, .m-uni > div { display:grid; grid-template-columns:26px 12px 1fr; white-space:pre; overflow:hidden; }
+  .m-split i, .m-uni i { font-style:normal; color:var(--m-faint); text-align:right; padding-right:6px; }
+  .m-a { background:var(--m-add); color:var(--m-add-fg); } .m-d { background:var(--m-del); color:var(--m-del-fg); }
+  .m-hunk { color:var(--m-blue); background:rgba(122,162,255,.08); padding:1px 8px; font:10px var(--font-mono); grid-column:1/-1; }
+  .m-hunk.cur { box-shadow:inset 2px 0 0 var(--m-accent); }
+  .m-uni { font:10px/1.6 var(--font-mono); }
+  .m-empty { display:grid; place-items:center; text-align:center; color:var(--m-dim); flex:1; padding:24px; }
+  .m-shade { position:absolute; inset:0; background:rgba(5,7,8,.62); backdrop-filter:blur(2px); }
+  .m-ghost { filter:blur(2.5px); opacity:.55; }
+  .m-modal { position:absolute; left:8%; right:8%; top:14%; bottom:10%; display:grid; grid-template-columns:120px 1fr; background:#171b1d; border:1px solid var(--m-border); border-radius:14px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,.5); }
+  .m-modal nav { padding:12px 8px; border-right:1px solid var(--m-border); }
+  .m-modal nav b { display:block; font-size:12px; padding:0 6px 8px; }
+  .m-modal nav span { display:flex; gap:7px; align-items:center; padding:4px 6px; border-radius:7px; color:var(--m-dim); margin-bottom:2px; }
+  .m-modal nav span.on { color:var(--m-fg); background:var(--m-bg); box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75); }
+  .m-modal section { padding:12px 14px; position:relative; min-width:0; }
+  .m-modal section h6 { margin:0 0 8px; font-size:12px; }
+  .m-close { position:absolute; right:10px; top:10px; width:20px; height:20px; border-radius:50%; background:var(--m-raised); display:grid; place-items:center; }
+  .m-set { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid var(--m-border); }
+  .m-set small { display:block; color:var(--m-dim); font-size:9px; }
+  .m-select { border:1px solid var(--m-border); background:var(--m-raised); border-radius:999px; padding:2px 10px; display:inline-flex; gap:10px; }
+  .m-switch { width:22px; height:12px; border-radius:99px; background:var(--m-hover); position:relative; flex:none; }
+  .m-switch::after { content:""; position:absolute; top:2px; left:2px; width:8px; height:8px; border-radius:50%; background:var(--m-dim); }
+  .m-switch.on { background:var(--m-fg); } .m-switch.on::after { left:12px; background:#111; }
+  .m-cam { position:relative; height:84px; border-radius:8px; background:linear-gradient(160deg,#2a2f33,#14181a); overflow:hidden; border:1px solid var(--m-border); }
+  .m-cam svg { position:absolute; inset:0; width:100%; height:100%; }
+  .m-metric { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:6px; }
+  .m-metric div { background:var(--m-raised); border-radius:7px; padding:4px 7px; }
+  .m-metric b { display:block; font:600 12px var(--font-mono); }
+  .m-metric small { color:var(--m-dim); font-size:9px; }
+  .m-ov { padding:12px 14px; position:absolute; inset:0; }
+  .m-ov-head { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+  .m-ov-head b { font-size:13px; } .m-ov-head .r { margin-left:auto; color:var(--m-dim); font-size:9px; }
+  .m-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .m-card { background:#161a1c; border:1px solid var(--m-border); border-radius:10px; padding:7px 8px; min-width:0; }
+  .m-card.on { border-color:var(--m-accent); box-shadow:0 0 0 1px rgba(236,122,79,.35), 0 0 18px rgba(236,122,79,.25); }
+  .m-card header { display:flex; align-items:center; gap:5px; font-weight:600; margin-bottom:4px; }
+  .m-card header em { margin-left:auto; font-style:normal; font-size:8px; color:var(--m-accent); background:rgba(236,122,79,.15); border-radius:99px; padding:0 5px; }
+  .m-card pre { margin:0; font:8px/1.5 var(--font-mono); color:var(--m-dim); height:44px; overflow:hidden; white-space:pre; }
+  .m-card footer { font:8px var(--font-mono); color:var(--m-faint); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .m-hud { position:absolute; left:50%; bottom:32px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .m-hud .chip { display:flex; align-items:center; gap:6px; background:rgba(20,24,26,.92); border:1px solid var(--m-border); border-radius:99px; padding:3px 10px; box-shadow:0 6px 18px rgba(0,0,0,.4); white-space:nowrap; }
+  .m-hud .chip.toast { background:var(--m-fg); color:#111; font-weight:600; }
+  .m-toast { position:absolute; right:10px; bottom:30px; display:flex; gap:8px; align-items:flex-start; background:#1d1314; border:1px solid rgba(240,154,140,.35); color:var(--m-fg); border-radius:9px; padding:7px 10px; max-width:240px; box-shadow:0 8px 20px rgba(0,0,0,.4); }
+  .m-toast .i { color:var(--m-del-fg); margin-top:1px; }
+  .m-dialog { position:absolute; left:12%; right:12%; top:12%; bottom:12%; background:#f3f3f3; color:#1b1b1b; border-radius:8px; box-shadow:0 18px 50px rgba(0,0,0,.55); display:flex; flex-direction:column; overflow:hidden; font-family:'Segoe UI',var(--font-sans); }
+  .m-dialog .bar { padding:5px 10px; background:#fff; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; }
+  .m-dialog .addr { margin:6px 10px; padding:2px 8px; border:1px solid #ccc; background:#fff; border-radius:4px; }
+  .m-dialog .list { flex:1; margin:0 10px; background:#fff; border:1px solid #ddd; padding:3px; }
+  .m-dialog .list div { padding:2px 6px; display:flex; gap:6px; align-items:center; }
+  .m-dialog .list .on { background:#cce4f7; }
+  .m-dialog .foot { display:flex; justify-content:flex-end; gap:6px; padding:7px 10px; }
+  .m-dialog .foot span { border:1px solid #bbb; background:#fdfdfd; border-radius:4px; padding:2px 12px; }
+  .m-dialog .foot .pri { background:#0067c0; color:#fff; border-color:#0067c0; }
+  .m-note { position:absolute; border:1.5px dashed var(--m-accent); border-radius:8px; pointer-events:none; }
+  .m-callout { position:absolute; background:var(--m-accent); color:#111; font-weight:700; font-size:9px; width:16px; height:16px; border-radius:50%; display:grid; place-items:center; }
+  .legend { font-size:12px; color:var(--muted-foreground); margin:6px 0 0; padding-left:18px; }
+  .legend li { margin:2px 0; }
+  /* Gesture cards */
+  .gcard svg.hand { width:100%; height:auto; display:block; background:var(--muted); border-radius:calc(var(--radius) * .7); }
+  .gcard .keys { font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); }
+  .gcard .tag { align-self:flex-start; font-size:10px; font-weight:600; border-radius:99px; padding:0 7px; background:var(--diff-del); color:var(--diff-del-fg); margin-top:2px; }
+
+  .gcard svg.hand .ho { fill:var(--ho); stroke:var(--ho); stroke-width:13; stroke-linecap:round; stroke-linejoin:round; }
+  .gcard svg.hand .hi { fill:var(--hi); stroke:var(--hi); stroke-width:9.5; stroke-linecap:round; stroke-linejoin:round; }
+  .gcard svg.hand .hd { fill:none; stroke:var(--muted-foreground); stroke-width:1.6; stroke-linecap:round; }
+  .gcard svg.hand .ga { fill:none; stroke:var(--gesture); stroke-width:2.4; stroke-linecap:round; }
+  .gcard svg.hand .gs { fill:none; stroke:var(--gesture); stroke-width:2; stroke-linecap:round; opacity:.7; }
+  .gcard svg.hand .gt { font:600 10px var(--font-sans); fill:var(--gesture); }
+  .gcard svg.hand .gtrack { fill:none; stroke:var(--border); stroke-width:4; }
+  .gcard svg.hand .gprog { fill:none; stroke:var(--gesture); stroke-width:4; stroke-linecap:round; }
+  .gcard svg.hand .gdot { fill:color-mix(in oklch, var(--gesture) 30%, transparent); stroke:var(--gesture); stroke-width:2; }
+  .gcard svg.hand .gring { fill:none; stroke:var(--gesture); stroke-width:2.2; }
+  .gcard svg.hand .gcardbox { fill:var(--card); stroke:var(--gesture); stroke-width:1.6; }
+  .gcard svg.hand .gline { fill:var(--border); }
+  table.dt { border-collapse:collapse; font-size:13px; width:100%; margin-top:6px; }
+  table.dt th, table.dt td { border:1px solid var(--border); padding:6px 9px; text-align:left; vertical-align:top; }
+  table.dt th { background:var(--muted); font-weight:600; }
 </style>
 </head>
 <body>
@@ -73,7 +223,7 @@
 <p class="sub">A gesture-augmented viewer for presenting code, git diffs and markdown. Keyboard and mouse do everything; hand gestures are an optional extra layer.</p>
 <nav class="toc">
   <a href="#s2">2 Tasks</a><a href="#t1">3.1 Open</a><a href="#t2">3.2 Browse</a><a href="#t3">3.3 Diff</a>
-  <a href="#t4">3.4 Tabs</a><a href="#t5">3.5 Zoom</a><a href="#t6">3.6 Gestures</a><a href="#t7">3.7 Lab</a><a href="#t8">3.8 Gesture design</a><a href="#sys">4 System</a>
+  <a href="#t4">3.4 Tabs</a><a href="#t5">3.5 Zoom</a><a href="#t6">3.6 Gestures</a><a href="#t7">3.7 Lab</a><a href="#t8">3.8 Gesture design</a><a href="#detect">Recognition</a><a href="#bench">Benchmark</a><a href="#sys">4 System</a>
 </nav>
 
 <h2 id="s2">2. Tasks</h2>
@@ -88,189 +238,369 @@
 </ol>
 
 <h2 id="s3">3. Prototypes</h2>
-<p class="sub">Low-fidelity wireframes per task. Multi-step tasks are storyboards: read the frames top to bottom. Each is explained with Shneiderman's Eight Golden Rules.</p>
+<p class="sub">High-fidelity mock-ups per task, drawn to match the running app (dark theme). Multi-step tasks are storyboards: read the frames top to bottom. Each is explained with Shneiderman's Eight Golden Rules.</p>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-file" viewBox="0 0 16 16"><path d="M4 1.5h5l3 3v10H4z"/><path d="M9 1.5v3h3"/></symbol>
+<symbol id="i-folder" viewBox="0 0 16 16"><path d="M1.5 4h4.5l1.5 1.5h7v8h-13z"/></symbol>
+<symbol id="i-branch" viewBox="0 0 16 16"><circle cx="5" cy="3.5" r="1.5"/><circle cx="5" cy="12.5" r="1.5"/><circle cx="11" cy="5" r="1.5"/><path d="M5 5v6M11 6.5c0 3-6 2-6 4.5"/></symbol>
+<symbol id="i-commit" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v4.5M8 10.5V15"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13.5 8a5.5 5.5 0 1 1-1.7-4"/><path d="M13 1.5v3h-3"/></symbol>
+<symbol id="i-x" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></symbol>
+<symbol id="i-eye" viewBox="0 0 16 16"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></symbol>
+<symbol id="i-code" viewBox="0 0 16 16"><path d="M6 4L2 8l4 4M10 4l4 4-4 4"/></symbol>
+<symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></symbol>
+<symbol id="i-gear" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></symbol>
+<symbol id="i-camera" viewBox="0 0 16 16"><path d="M1.5 5h3l1.5-2h4l1.5 2h3v8.5h-13z"/><circle cx="8" cy="9" r="2.5"/></symbol>
+<symbol id="i-camoff" viewBox="0 0 16 16"><path d="M1.5 5h3l1.5-2h4l1.5 2h3v8.5h-13z"/><path d="M2 2l12 12"/></symbol>
+<symbol id="i-hand" viewBox="0 0 16 16"><path d="M5 8.5V3.5a1 1 0 0 1 2 0V7.5M7 7V2.5a1 1 0 0 1 2 0V7.5M9 7.5V3.5a1 1 0 0 1 2 0V8M11 8V5.5a1 1 0 0 1 2 0V10a4.5 4.5 0 0 1-4.5 4.5h-1A4 4 0 0 1 4 12.5L2.4 9.6a1 1 0 0 1 1.7-1L5 10"/></symbol>
+<symbol id="i-palette" viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13c1 0 1.3-.8.9-1.6-.5-.9.1-1.9 1.1-1.9h1.5a3 3 0 0 0 3-3A6.5 6.5 0 0 0 8 1.5z"/><circle cx="5" cy="7" r=".7"/><circle cx="7.5" cy="4.5" r=".7"/><circle cx="10.5" cy="5.5" r=".7"/></symbol>
+<symbol id="i-type" viewBox="0 0 16 16"><path d="M3 3h10M8 3v10.5M6 13.5h4"/></symbol>
+<symbol id="i-cmd" viewBox="0 0 16 16"><path d="M6 6h4v4H6zM6 6V4.5A1.5 1.5 0 1 0 4.5 6H6M10 6V4.5A1.5 1.5 0 1 1 11.5 6H10M6 10v1.5A1.5 1.5 0 1 1 4.5 10H6M10 10v1.5a1.5 1.5 0 1 0 1.5-1.5H10"/></symbol>
+<symbol id="i-gauge" viewBox="0 0 16 16"><path d="M2.5 11.5a5.5 5.5 0 1 1 11 0"/><path d="M8 11.5l3-3.5"/></symbol>
+<symbol id="i-grid" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></symbol>
+<symbol id="i-sidebar" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M6 3v10"/></symbol>
+<symbol id="i-present" viewBox="0 0 16 16"><rect x="2" y="2.5" width="12" height="8.5" rx="1"/><path d="M8 11v3M5.5 14h5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 16 16"><path d="M4 8h8M8 4v8"/></symbol>
+<symbol id="i-minus" viewBox="0 0 16 16"><path d="M4 8h8"/></symbol>
+<symbol id="i-alert" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4M8 11v.3"/></symbol>
+<symbol id="i-down" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></symbol>
+<symbol id="i-up" viewBox="0 0 16 16"><path d="M4 10l4-4 4 4"/></symbol>
+<symbol id="i-updown" viewBox="0 0 16 16"><path d="M5 6l3-3 3 3M5 10l3 3 3-3"/></symbol>
+<symbol id="i-copy" viewBox="0 0 16 16"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></symbol>
+<symbol id="i-play" viewBox="0 0 16 16"><path d="M5 3l8 5-8 5z"/></symbol>
+<symbol id="i-max" viewBox="0 0 16 16"><path d="M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"/></symbol>
+</defs></svg>
 
 <!-- TASK 1 -->
 <h2 id="t1">3.1 Open a workspace</h2>
 <p class="sub">Storyboard: 1a Welcome → 1b Pick folder → 1c Workspace loaded (or 1d error).</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">1a. Welcome</div><div class="body">
-      <div class="title"><span>Nexis Lens</span><span>_ □ ✕</span></div>
-      <div class="main" style="text-align:center">
-        <h3>Present code, diffs and markdown</h3>
-        <div class="row" style="justify-content:center"><span class="btn fill">Open folder… Ctrl+O</span></div>
-        <div class="box" style="text-align:left">Recent<br>▸ nexis-lens &nbsp; C:\Dev
-exis-lens<br>▸ my-notes &nbsp; C:\Dev\my-notes</div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>1a.</b> Welcome screen (every launch starts here)</figcaption>
+    <div class="mock"><div class="m-top"><span class="m-logo"><svg class="i"><use href="#i-search"/></svg></span><b>Lens</b><span class="m-icons"><span><svg class="i"><use href="#i-gear"/></svg></span></span><span class="m-win"><span>–</span><span>□</span><span>✕</span></span></div>
+      <div class="m-body full" style="min-height:250px"><div class="m-empty" style="place-items:center">
+        <div style="width:260px">
+          <div style="font-size:22px;font-weight:600;letter-spacing:-.02em">Nexis Lens</div>
+          <div class="m-dim" style="margin-top:3px">Present code, diffs and docs — from the keyboard or across the room.</div>
+          <div style="margin-top:16px"><span class="m-btn fill lg"><svg class="i"><use href="#i-folder"/></svg> Open folder <span class="m-mono" style="opacity:.6;font-size:10px">Ctrl+O</span></span></div>
+          <div class="m-head" style="margin-top:18px;text-align:left">Recent</div>
+          <div style="text-align:left;border:1px solid var(--m-border);border-radius:10px;background:var(--m-panel);overflow:hidden">
+            <div class="m-file" style="padding:6px 9px"><svg class="i"><use href="#i-folder"/></svg><b>Nexis</b><span class="m-faint m-mono" style="margin-left:auto">C:\Users\ryan\Dev\Nexis</span></div>
+            <div class="m-file" style="padding:6px 9px;border-top:1px solid var(--m-border)"><svg class="i"><use href="#i-folder"/></svg><b>nexis-lens</b><span class="m-faint m-mono" style="margin-left:auto">C:\Users\ryan\Dev\nexis-lens</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div></figure>
+
+    <figure class="shot"><figcaption><b>1b.</b> Native folder picker (Windows shown)</figcaption>
+    <div class="mock"><div class="m-ghost"><div class="m-top"><span class="m-logo"><svg class="i"><use href="#i-search"/></svg></span><b>Lens</b></div><div class="m-body full" style="min-height:220px"></div></div>
+      <div class="m-dialog"><div class="bar"><span>Select folder</span><span>✕</span></div>
+        <div class="addr">This PC › Users › ryan › Dev</div>
+        <div class="list"><div>📁 job-app-finder</div><div class="on">📁 Nexis</div><div>📁 nexis-design</div><div>📁 nexis-lens</div></div>
+        <div class="foot"><span>Cancel</span><span class="pri">Select folder</span></div></div>
+    </div></figure>
+
+    <figure class="shot"><figcaption><b>1c.</b> Workspace loaded: file tree on the left, nothing open yet</figcaption>
+    <div class="mock">
+      <div class="m-top"><span class="m-logo"><svg class="i"><use href="#i-search"/></svg></span><b>Lens</b><span class="m-faint">/</span><span class="m-dim">Nexis</span><span class="m-pill"><svg class="i"><use href="#i-branch"/></svg>nexis-epoch-polish</span>
+        <span class="m-icons"><span class="on"><svg class="i"><use href="#i-sidebar"/></svg></span><span><svg class="i"><use href="#i-folder"/></svg></span><span><svg class="i"><use href="#i-grid"/></svg></span><span><svg class="i"><use href="#i-camoff"/></svg></span><span><svg class="i"><use href="#i-present"/></svg></span><span><svg class="i"><use href="#i-gear"/></svg></span></span><span class="m-win"><span>–</span><span>□</span><span>✕</span></span></div>
+      <div class="m-body">
+        <div class="m-side"><div class="m-seg"><span class="on">Files</span><span>Changes</span><svg class="i"><use href="#i-refresh"/></svg></div>
+          <div class="m-file"><svg class="i"><use href="#i-folder"/></svg>src</div><div class="m-file"><svg class="i"><use href="#i-folder"/></svg>src-tauri</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>AGENTS.md</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>CHANGELOG.md</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>NEXIS.md</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>package.json</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>README.md</div></div>
+        <div class="m-main"><div class="m-empty"><div><svg class="i"><use href="#i-file"/></svg><div style="margin-top:6px">Pick a file in the sidebar, or open <b>Changes</b> to review a diff.</div><div class="m-faint" style="margin-top:4px">Ctrl+G overview · F5 present · Ctrl+, settings</div></div></div></div>
       </div>
-    </div></div>
-    <div class="frame"><div class="cap">1b. Native folder picker</div><div class="body"><div class="main">
-      <div class="box">Select a folder &nbsp; [ C:\Dev
-exis-lens ▾ ]</div><span class="btn">Cancel</span><span class="btn fill">Select folder</span></div></div></div>
-    <div class="frame"><div class="cap">1c. Workspace loaded</div><div class="body" style="grid-template-columns:150px 1fr">
-      <div class="title"><span>Nexis Lens — nexis-lens</span><span>_ □ ✕</span></div>
-      <div class="side">Files | Changes | History<br>▾ src<br>&nbsp;▸ app<br>README.md</div>
-      <div class="main"><div class="box">Select a file to start reading.</div></div>
-      <div class="status"><span>nexis-lens · branch main</span><span>Gestures: off</span></div>
-    </div></div>
-    <div class="frame"><div class="cap">1d. Error state</div><div class="body"><div class="main">
-      <div class="box del">✕ Could not open that folder: access denied.</div><span class="btn">Choose another</span></div></div></div>
+      <div class="m-status"><span class="m-mono"><svg class="i"><use href="#i-branch"/></svg> nexis-epoch-polish @15b72b4</span><span class="r"><span><svg class="i"><use href="#i-camoff"/></svg></span><span class="m-dot"></span>Gestures off</span></div>
+    </div></figure>
+
+    <figure class="shot"><figcaption><b>1d.</b> Error: the folder could not be opened</figcaption>
+    <div class="mock"><div class="m-top"><span class="m-logo"><svg class="i"><use href="#i-search"/></svg></span><b>Lens</b><span class="m-icons"><span><svg class="i"><use href="#i-gear"/></svg></span></span></div>
+      <div class="m-body full" style="min-height:120px"><div class="m-empty"><span class="m-btn fill"><svg class="i"><use href="#i-folder"/></svg> Open folder</span></div></div>
+      <div class="m-toast"><svg class="i"><use href="#i-alert"/></svg><div><b>Couldn't open "Archive"</b><div class="m-dim">Access is denied. Pick another folder or check its permissions.</div><div style="margin-top:5px"><span class="m-btn">Choose another…</span></div></div></div>
+    </div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> primary actions use the same filled button style across the app.</li>
-    <li><b>2 Shortcuts:</b> Ctrl+O to open; the recent list reopens in one click.</li>
-    <li><b>3 Feedback:</b> the title bar and status bar show the folder and branch once loaded.</li>
-    <li><b>4 Closure:</b> the flow ends in a loaded workspace with a prompt to select a file.</li>
-    <li><b>5 Error handling:</b> a failed open names the cause and offers "Choose another".</li>
-    <li><b>6 Reversal:</b> Cancel in the picker changes nothing; opening another folder is always possible.</li>
-    <li><b>7 User control:</b> the user picks the folder; the app never scans disk on its own.</li>
-    <li><b>8 Memory load:</b> recents remember paths so users need not retype them.</li>
+    <li><b>1 Consistency:</b> the one primary action (Open folder) uses the same filled button style used for primary actions everywhere else.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+O opens the picker from anywhere; a recent workspace reopens in one click.</li>
+    <li><b>3 Feedback:</b> once loaded, the title bar shows the workspace name and branch pill, and the status bar shows the branch and commit.</li>
+    <li><b>4 Closure:</b> the flow ends in a loaded workspace whose empty stage says what to do next.</li>
+    <li><b>5 Error handling:</b> a failed open names the folder and the cause and offers "Choose another…".</li>
+    <li><b>6 Reversal:</b> Cancel in the picker changes nothing; opening another folder is always one shortcut away.</li>
+    <li><b>7 User control:</b> the user picks the folder; the app never scans the disk on its own.</li>
+    <li><b>8 Memory load:</b> recents show name and full path, so users recognise rather than retype.</li>
   </ul></div>
 </div>
 
 <!-- TASK 2 -->
 <h2 id="t2">3.2 Browse files and read code or markdown</h2>
-<p class="sub">Storyboard: 2a Viewer → 2b Find. Select files in the sidebar tree, scroll, search with Ctrl+F, and flip markdown between raw and preview.</p>
+<p class="sub">Storyboard: 2a Markdown preview → 2b Code with find. Select a file in the tree, scroll, search with Ctrl+F, and flip markdown between Preview and Raw.</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">2a. Main viewer</div><div class="body" style="grid-template-columns:150px 1fr">
-      <div class="title"><span>Nexis Lens — nexis-lens</span><span>_ □ ✕</span></div>
-      <div class="side">Files | Changes | History<br>▾ src<br>&nbsp;&nbsp;▸ app<br>&nbsp;&nbsp;<b>main.tsx</b><br>README.md<br>package.json</div>
-      <div class="main"><span class="tab on">main.tsx</span><span class="tab">README.md</span><span style="float:right">[Raw|Preview] 100% [−][+]</span>
-        <div class="box" style="min-height:90px">1 import React …<br>2 import App …<br>3 <span class="cursor">▌</span></div></div>
-      <div class="status"><span>main.tsx · TypeScript · Ln 3</span><span>Gestures: off</span></div>
-    </div></div>
-    <div class="frame"><div class="cap">2b. Find in file</div><div class="body">
-      <div class="main"><div class="box">🔍 [ useState_____ ] 3 of 12 &nbsp; ↑ ↓ ✕</div><div class="box">… highlighted matches in context …</div></div>
-    </div></div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>2a.</b> Markdown file in Preview mode</figcaption>
+    <div class="mock">
+      <div class="m-top"><span class="m-logo"><svg class="i"><use href="#i-search"/></svg></span><b>Lens</b><span class="m-faint">/</span><span class="m-dim">Nexis</span><span class="m-pill"><svg class="i"><use href="#i-branch"/></svg>nexis-epoch-polish</span>
+        <span class="m-icons"><span class="on"><svg class="i"><use href="#i-sidebar"/></svg></span><span><svg class="i"><use href="#i-folder"/></svg></span><span><svg class="i"><use href="#i-grid"/></svg></span><span><svg class="i"><use href="#i-camoff"/></svg></span><span><svg class="i"><use href="#i-present"/></svg></span><span><svg class="i"><use href="#i-gear"/></svg></span></span></div>
+      <div class="m-body">
+        <div class="m-side"><div class="m-seg"><span class="on">Files</span><span>Changes</span><svg class="i"><use href="#i-refresh"/></svg></div>
+          <div class="m-file"><svg class="i"><use href="#i-file"/></svg>CHANGELOG.md</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>epoch.html</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>LICENSE</div><div class="m-file on"><svg class="i"><use href="#i-file"/></svg>NEXIS.md</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>package.json</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>README.md</div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>ROADMAP.md</div></div>
+        <div class="m-main">
+          <div class="m-tabs"><span class="m-tab on"><svg class="i"><use href="#i-file"/></svg>NEXIS.md <span class="x">✕</span></span></div>
+          <div class="m-path">C:\Users\ryan\Dev\Nexis\NEXIS.md<span class="m-tools"><span class="m-toggle"><span class="on"><svg class="i"><use href="#i-eye"/></svg>Preview</span><span><svg class="i"><use href="#i-code"/></svg>Raw</span></span><span class="m-mono">100%</span><span><svg class="i"><use href="#i-max"/></svg></span></span></div>
+          <div class="m-doc"><h4>NEXIS.md</h4><p>Drop this file in a project root and Nexis will load it as persistent AI context, similar to <code>CLAUDE.md</code> or <code>AGENTS.md</code>.</p>
+            <h5>Project snapshot</h5><table class="m-table"><tr><th>Thing</th><th>Value</th></tr><tr><td>Bundle ID</td><td><code>app.nexis.nexis</code></td></tr><tr><td>Package manager</td><td>pnpm</td></tr></table></div>
+        </div>
+      </div>
+      <div class="m-status"><span class="m-mono"><svg class="i"><use href="#i-branch"/></svg> nexis-epoch-polish @15b72b4</span><span class="m-mono">NEXIS.md</span><span class="r"><span>Markdown</span><span class="m-mono">100%</span><span class="m-dot"></span>Gestures off</span></div>
+    </div></figure>
+
+    <figure class="shot"><figcaption><b>2b.</b> Code file with Ctrl+F find (match 3 of 12)</figcaption>
+    <div class="mock">
+      <div class="m-body full">
+        <div class="m-main">
+          <div class="m-tabs"><span class="m-tab"><svg class="i"><use href="#i-file"/></svg>NEXIS.md <span class="x">✕</span></span><span class="m-tab on"><svg class="i"><use href="#i-file"/></svg>Stage.tsx <span class="x">✕</span></span></div>
+          <div class="m-path">src\modules\shell\Stage.tsx<span class="m-tools"><span class="m-mono">100%</span><span><svg class="i"><use href="#i-minus"/></svg></span><span><svg class="i"><use href="#i-plus"/></svg></span></span></div>
+          <div class="m-search"><svg class="i"><use href="#i-search"/></svg><span class="m-input">useState</span><span class="m-dim m-mono">3 of 12</span><span><svg class="i"><use href="#i-up"/></svg></span><span><svg class="i"><use href="#i-down"/></svg></span><span class="m-dim"><svg class="i"><use href="#i-x"/></svg></span></div>
+          <div class="m-code">
+            <div><i>12</i><span><span class="kw">import</span> { <mark>useState</mark>, useEffect } <span class="kw">from</span> <span class="st">"react"</span>;</span></div>
+            <div><i>13</i><span></span></div>
+            <div><i>14</i><span><span class="kw">export function</span> <span class="fn">Stage</span>() {</span></div>
+            <div><i>15</i><span>  <span class="kw">const</span> [zoom, setZoom] = <mark>useState</mark>(1);</span></div>
+            <div><i>16</i><span>  <span class="kw">const</span> [open, setOpen] = <mark class="cur">useState</mark>(<span class="kw">false</span>);</span></div>
+            <div><i>17</i><span>  <span class="cm">// per-tab scroll and zoom are restored on switch</span></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="m-status"><span class="m-mono">Stage.tsx</span><span class="r"><span>TypeScript</span><span class="m-mono">100%</span><span class="m-dot"></span>Gestures off</span></div>
+    </div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> same tab, toolbar and status bar layout for every file type.</li>
-    <li><b>2 Shortcuts:</b> Ctrl+F, Ctrl+Shift+V, zoom keys.</li>
-    <li><b>3 Feedback:</b> selected file highlighted; match counter "3 of 12".</li>
-    <li><b>4 Closure:</b> toggle shows the new mode label immediately.</li>
-    <li><b>5 Error handling:</b> unreadable or binary files show a message, not a blank pane.</li>
-    <li><b>6 Reversal:</b> Esc closes search; toggle flips back.</li>
-    <li><b>7 User control:</b> the user scrolls and selects; nothing auto-navigates.</li>
-    <li><b>8 Memory load:</b> tree and tabs stay visible; per-tab scroll and zoom are restored.</li>
+    <li><b>1 Consistency:</b> every file type shares the same tab bar, path bar and status bar; only the content area changes.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+F to find, Ctrl+Shift+V for Preview/Raw, Ctrl+= / Ctrl+− to zoom.</li>
+    <li><b>3 Feedback:</b> the open file is highlighted in the tree and underlined in orange in the tab bar; find shows "3 of 12".</li>
+    <li><b>4 Closure:</b> the Preview/Raw toggle shows the active mode the moment it changes.</li>
+    <li><b>5 Error handling:</b> binary or unreadable files show a message in place of the content, not a blank pane.</li>
+    <li><b>6 Reversal:</b> Esc closes find; the toggle flips back; closing a tab never touches the file.</li>
+    <li><b>7 User control:</b> the viewer is read-only and never navigates on its own.</li>
+    <li><b>8 Memory load:</b> the full path stays visible above the content, and per-tab scroll and zoom are restored.</li>
   </ul></div>
 </div>
 
 <!-- TASK 3 -->
 <h2 id="t3">3.3 Review a git diff</h2>
-<p class="sub">Storyboard: 3a Changes → 3b History. See working-tree changes or a past commit, step through hunks, and switch unified or split layout.</p>
+<p class="sub">Storyboard: 3a Working-tree change in split layout → 3b Past commit in unified layout. Both live in the Changes tab; history sits under the working tree.</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">3a. Changes tab, split diff</div><div class="body" style="grid-template-columns:150px 1fr">
-      <div class="title"><span>Nexis Lens — nexis-lens</span><span>_ □ ✕</span></div>
-      <div class="side">Files | <b>Changes</b> | History<br>Staged (1)<br>&nbsp;M api.ts<br>Unstaged (2)<br>&nbsp;<b>M main.tsx</b><br>&nbsp;? notes.md</div>
-      <div class="main"><span style="float:right">Hunk 2/5 &nbsp; [Unified|<b>Split</b>] ] [</span><br>
-        <div class="grid4" style="grid-template-columns:1fr 1fr"><div class="box del">− const a = 1</div><div class="box add">+ const a = 2</div><div class="box">  unchanged</div><div class="box">  unchanged</div></div></div>
-      <div class="status"><span>+12 −4 · 2 files</span><span>Gestures: on · swipe ↕ hunks</span></div>
-    </div></div>
-    <div class="frame"><div class="cap">3b. History list</div><div class="body"><div class="main">
-      <div class="box">a1f3 Add hand tracking · 2d ago</div><div class="box">9b20 Fix welcome screen · 3d ago</div></div></div></div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>3a.</b> Changes tab: working tree, split diff, hunk 2 of 5</figcaption>
+    <div class="mock">
+      <div class="m-body">
+        <div class="m-side"><div class="m-seg"><span>Files</span><span class="on">Changes</span><svg class="i"><use href="#i-refresh"/></svg></div>
+          <div class="m-head"><span>Working tree</span><span class="m-mono">3</span></div>
+          <div class="m-file on"><svg class="i"><use href="#i-file"/></svg>Stage.tsx<span class="m-badge mod">M</span></div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>lens.css<span class="m-badge mod">M</span></div><div class="m-file"><svg class="i"><use href="#i-file"/></svg>notes.md<span class="m-badge new">A</span></div>
+          <div class="m-head"><span>History</span><span class="m-mono">60</span></div>
+          <div class="m-commit"><svg class="i"><use href="#i-commit"/></svg><div>Fix Epoch layout reset</div><small>15b72b4 · ryan · 3d</small></div>
+          <div class="m-commit"><svg class="i"><use href="#i-commit"/></svg><div>Epoch polish: type scale</div><small>381d57f · ryan · 3d</small></div></div>
+        <div class="m-main">
+          <div class="m-tabs"><span class="m-tab on"><svg class="i"><use href="#i-file"/></svg>Stage.tsx · diff <span class="x">✕</span></span></div>
+          <div class="m-path">src\modules\shell\Stage.tsx<span class="m-tools"><span class="m-mono">Hunk 2/5</span><span><svg class="i"><use href="#i-up"/></svg></span><span><svg class="i"><use href="#i-down"/></svg></span><span class="m-toggle"><span>Unified</span><span class="on">Split</span></span></span></div>
+          <div class="m-split">
+            <div><div class="m-hunk">@@ -10,6 +10,7 @@</div><div><i>14</i><span></span><span>export function Stage() {</span></div><div class="m-d"><i>15</i><span>−</span><span>  const z = 1;</span></div><div><i>16</i><span></span><span>  return (</span></div>
+              <div class="m-hunk cur">@@ -40,4 +41,6 @@</div><div class="m-d"><i>41</i><span>−</span><span>  &lt;Viewer /&gt;</span></div><div><i></i><span></span><span></span></div></div>
+            <div><div class="m-hunk">&nbsp;</div><div><i>14</i><span></span><span>export function Stage() {</span></div><div class="m-a"><i>15</i><span>+</span><span>  const [zoom, setZoom] =</span></div><div><i>16</i><span></span><span>  return (</span></div>
+              <div class="m-hunk cur">&nbsp;</div><div class="m-a"><i>42</i><span>+</span><span>  &lt;Viewer zoom={zoom} /&gt;</span></div><div class="m-a"><i>43</i><span>+</span><span>  &lt;GestureHud /&gt;</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="m-status"><span class="m-mono"><svg class="i"><use href="#i-branch"/></svg> main</span><span class="m-mono" style="color:var(--m-add-fg)">+12</span><span class="m-mono" style="color:var(--m-del-fg)">−4</span><span class="r"><span>Split diff</span><span class="m-dot live"></span>Focus: Stage.tsx · pinch-drag to scroll</span></div>
+    </div></figure>
+
+    <figure class="shot"><figcaption><b>3b.</b> A past commit from History, unified layout</figcaption>
+    <div class="mock">
+      <div class="m-body">
+        <div class="m-side"><div class="m-seg"><span>Files</span><span class="on">Changes</span><svg class="i"><use href="#i-refresh"/></svg></div>
+          <div class="m-head"><span>Working tree</span><span class="m-mono">0</span></div><div class="m-dim" style="padding:0 6px 4px">Clean — nothing to review.</div>
+          <div class="m-head"><span>History</span><span class="m-mono">60</span></div>
+          <div class="m-commit"><svg class="i"><use href="#i-commit"/></svg><div>Fix Epoch layout reset</div><small>15b72b4 · ryan · 3d</small></div>
+          <div class="m-commit on"><svg class="i"><use href="#i-commit"/></svg><div>ML Lab: shared buttons</div><small>ddf8c9c · ryan · 4d</small></div>
+          <div class="m-commit"><svg class="i"><use href="#i-commit"/></svg><div>fix(deps): keep the shadcn CLI</div><small>b93dfb2 · ryan · 4d</small></div></div>
+        <div class="m-main">
+          <div class="m-tabs"><span class="m-tab on"><svg class="i"><use href="#i-commit"/></svg>ddf8c9c <span class="x">✕</span></span></div>
+          <div class="m-path">ML Lab: shared buttons, themed charts · 3 files<span class="m-tools"><span class="m-toggle"><span class="on">Unified</span><span>Split</span></span></span></div>
+          <div class="m-uni"><div class="m-hunk">src/ml/Lab.tsx  @@ -21,5 +21,5 @@</div>
+            <div><i>21</i><span></span><span>&lt;div className="toolbar"&gt;</span></div>
+            <div class="m-d"><i>22</i><span>−</span><span>  &lt;button className="btn-run"&gt;Run&lt;/button&gt;</span></div>
+            <div class="m-a"><i>22</i><span>+</span><span>  &lt;Button size="sm"&gt;Run&lt;/Button&gt;</span></div>
+            <div><i>23</i><span></span><span>&lt;/div&gt;</span></div></div>
+        </div>
+      </div>
+      <div class="m-status"><span class="m-mono">ddf8c9c</span><span class="r"><span>Unified diff</span><span class="m-dot"></span>Gestures off</span></div>
+    </div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> add is green with +, remove is red with − (never colour alone).</li>
-    <li><b>2 Shortcuts:</b> <code>]</code> and <code>[</code> for hunks, Ctrl+Shift+U for layout.</li>
-    <li><b>3 Feedback:</b> "Hunk 2/5" counter and +/− totals.</li>
-    <li><b>4 Closure:</b> reaching the last hunk shows "end of changes".</li>
-    <li><b>5 Error handling:</b> not a git repo shows a clear empty state.</li>
-    <li><b>6 Reversal:</b> read-only view, so nothing destructive; layout toggle is reversible.</li>
-    <li><b>7 User control:</b> user chooses file, commit and layout.</li>
-    <li><b>8 Memory load:</b> status bar lists the active gesture hints.</li>
+    <li><b>1 Consistency:</b> added lines are green with "+", removed lines red with "−", in both layouts (never colour alone).</li>
+    <li><b>2 Shortcuts:</b> <code>]</code> and <code>[</code> step through hunks; Ctrl+Shift+U switches unified/split.</li>
+    <li><b>3 Feedback:</b> "Hunk 2/5", an orange marker on the current hunk, and +/− totals in the status bar.</li>
+    <li><b>4 Closure:</b> stepping past the last hunk should say so instead of silently stopping (proposed; not built yet).</li>
+    <li><b>5 Error handling:</b> a clean tree says "Clean — nothing to review"; a folder that isn't a repo says so.</li>
+    <li><b>6 Reversal:</b> the view is read-only, so nothing here can damage the repo; the layout toggle flips back.</li>
+    <li><b>7 User control:</b> the user chooses the file, the commit and the layout.</li>
+    <li><b>8 Memory load:</b> the status bar names the layout and, when armed, which gesture moves between hunks.</li>
   </ul></div>
 </div>
 
 <!-- TASK 4 -->
 <h2 id="t4">3.4 Switch tabs and use the session overview</h2>
-<p class="sub">Move between open items, or open the overview grid to jump to any tab.</p>
+<p class="sub">Storyboard: 4a several tabs open → 4b Ctrl+G overview → Enter returns to the chosen tab.</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">4a. Overview (Ctrl+G)</div><div class="body"><div class="main">
-      <div class="grid4"><div class="box">main.tsx</div><div class="box" style="outline:2px solid var(--ring)">README.md ◂</div><div class="box">diff api.ts</div><div class="box">App.tsx</div></div>
-      <p style="color:var(--muted-foreground)">←→↑↓ move · Enter open · Esc close</p></div></div></div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>4a.</b> Tab bar with four open items (Ctrl+Tab cycles)</figcaption>
+    <div class="mock"><div class="m-body full" style="min-height:0">
+      <div class="m-main"><div class="m-tabs"><span class="m-tab"><svg class="i"><use href="#i-file"/></svg>NEXIS.md <span class="x">✕</span></span><span class="m-tab on"><svg class="i"><use href="#i-file"/></svg>Stage.tsx <span class="x">✕</span></span><span class="m-tab"><svg class="i"><use href="#i-file"/></svg>Stage.tsx · diff <span class="x">✕</span></span><span class="m-tab"><svg class="i"><use href="#i-commit"/></svg>ddf8c9c <span class="x">✕</span></span></div>
+      <div class="m-code" style="height:56px"><div><i>14</i><span><span class="kw">export function</span> <span class="fn">Stage</span>() {</span></div><div><i>15</i><span>  <span class="kw">const</span> [zoom, setZoom] = useState(1);</span></div></div></div></div></div></figure>
+
+    <figure class="shot"><figcaption><b>4b.</b> Session overview: arrows move, Enter opens, Esc closes</figcaption>
+    <div class="mock" style="height:250px"><div class="m-ghost"><div class="m-doc"><h4>NEXIS.md</h4><p>Drop this file in a project root…</p></div></div><div class="m-shade"></div>
+      <div class="m-ov"><div class="m-ov-head"><b>Session overview</b><span class="m-dim">4 open items</span><span class="r">← → ↑ ↓ to move · Enter to open · Esc to close &nbsp;✕</span></div>
+        <div class="m-cards">
+          <div class="m-card"><header><svg class="i"><use href="#i-file"/></svg>NEXIS.md</header><pre># NEXIS.md
+Drop this file in a pro…
+## Project snapshot
+| Thing | Value |</pre><footer>C:\Users\ryan\Dev\Nexis\NEXIS.md</footer></div>
+          <div class="m-card on"><header><svg class="i"><use href="#i-file"/></svg>Stage.tsx<em>current</em></header><pre>import { useState } …
+export function Stage() {
+  const [zoom, setZoom]
+  return (</pre><footer>src\modules\shell\Stage.tsx</footer></div>
+          <div class="m-card"><header><svg class="i"><use href="#i-file"/></svg>Stage.tsx · diff</header><pre><span style="color:var(--m-del-fg)">-  const z = 1;</span>
+<span style="color:var(--m-add-fg)">+  const [zoom, setZoom]</span>
+<span style="color:var(--m-add-fg)">+  &lt;GestureHud /&gt;</span></pre><footer>working tree · 2 hunks</footer></div>
+          <div class="m-card"><header><svg class="i"><use href="#i-commit"/></svg>ddf8c9c</header><pre>ML Lab: shared buttons,
+themed charts
+3 files · +18 −11</pre><footer>commit · ryan · 4d</footer></div>
+        </div></div>
+    </div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> same selection highlight as the file tree.</li>
-    <li><b>2 Shortcuts:</b> Ctrl+Tab, Ctrl+G, arrows.</li>
-    <li><b>3 Feedback:</b> accent outline follows focus.</li>
-    <li><b>4 Closure:</b> Enter closes overview on the chosen tab.</li>
-    <li><b>5 Error handling:</b> empty session shows "Nothing open yet".</li>
-    <li><b>6 Reversal:</b> Esc returns to the previous tab.</li>
-    <li><b>7 User control:</b> opened only on request.</li>
-    <li><b>8 Memory load:</b> thumbnails recognise tabs without recall.</li>
+    <li><b>1 Consistency:</b> the orange accent marks "current" in both the tab bar and the overview.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+Tab / Ctrl+Shift+Tab, Ctrl+G, arrow keys and Enter.</li>
+    <li><b>3 Feedback:</b> the glowing card follows focus and carries a "current" badge.</li>
+    <li><b>4 Closure:</b> Enter closes the overview on the chosen tab.</li>
+    <li><b>5 Error handling:</b> with nothing open, the overview says so rather than showing an empty grid.</li>
+    <li><b>6 Reversal:</b> Esc returns to the tab you came from.</li>
+    <li><b>7 User control:</b> the overview opens only when asked for.</li>
+    <li><b>8 Memory load:</b> each card previews its content and full path, so tabs are recognised, not recalled; the key hints stay on screen.</li>
   </ul></div>
 </div>
 
 <!-- TASK 5 -->
 <h2 id="t5">3.5 Zoom and present</h2>
-<p class="sub">Scale content for a room and enter presentation mode with chrome hidden.</p>
+<p class="sub">Storyboard: 5a zoom for the room → 5b F5 presentation mode with the chrome hidden.</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">5. Presentation mode (F5)</div><div class="body"><div class="main">
-      <div class="box" style="min-height:90px;font-size:15px">Large code, no sidebar or toolbar</div>
-      <div style="text-align:right;color:var(--muted-foreground)">150% · Esc to exit</div></div></div></div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>5a.</b> Zoomed to 150% (Ctrl+=); the level shows in the path bar and status bar</figcaption>
+    <div class="mock"><div class="m-body full" style="min-height:0"><div class="m-main">
+      <div class="m-tabs"><span class="m-tab on"><svg class="i"><use href="#i-file"/></svg>Stage.tsx <span class="x">✕</span></span></div>
+      <div class="m-path">src\modules\shell\Stage.tsx<span class="m-tools"><span class="m-mono" style="color:var(--m-fg);background:var(--m-raised);border-radius:5px;padding:0 5px">150%</span><span><svg class="i"><use href="#i-minus"/></svg></span><span><svg class="i"><use href="#i-plus"/></svg></span><span><svg class="i"><use href="#i-max"/></svg></span></span></div>
+      <div class="m-code" style="font-size:15px"><div style="grid-template-columns:44px 1fr"><i>14</i><span><span class="kw">export function</span> <span class="fn">Stage</span>() {</span></div><div style="grid-template-columns:44px 1fr"><i>15</i><span>  <span class="kw">const</span> [zoom, setZoom] =</span></div></div>
+    </div></div><div class="m-status"><span class="m-mono">Stage.tsx</span><span class="r"><span class="m-mono">150%</span></span></div></div></figure>
+
+    <figure class="shot"><figcaption><b>5b.</b> Presentation mode (F5): no title bar, sidebar or status bar (exit hint is proposed, not built yet)</figcaption>
+    <div class="mock" style="height:190px"><div class="m-code" style="font-size:17px;padding:22px 10px"><div style="grid-template-columns:50px 1fr"><i>14</i><span><span class="kw">export function</span> <span class="fn">Stage</span>() {</span></div><div style="grid-template-columns:50px 1fr"><i>15</i><span>  <span class="kw">const</span> [zoom, setZoom] =</span></div><div style="grid-template-columns:50px 1fr"><i>16</i><span>  <span class="kw">return</span> (</span></div></div>
+      <div class="m-hud"><span class="chip"><span class="m-dim">Presenting</span>· Esc to exit · 150%</span></div></div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> zoom keys work identically on all viewers.</li>
-    <li><b>2 Shortcuts:</b> F5, Ctrl+= / − / 0, Ctrl+9 fit.</li>
-    <li><b>3 Feedback:</b> zoom percentage shown briefly.</li>
-    <li><b>4 Closure:</b> entering and leaving fullscreen is explicit.</li>
-    <li><b>5 Error handling:</b> zoom is clamped to a min and max.</li>
-    <li><b>6 Reversal:</b> Esc exits; Ctrl+0 resets.</li>
-    <li><b>7 User control:</b> nothing enters presentation on its own.</li>
-    <li><b>8 Memory load:</b> "Esc to exit" hint is always visible.</li>
+    <li><b>1 Consistency:</b> the same zoom keys work in code, markdown and diffs.</li>
+    <li><b>2 Shortcuts:</b> F5, Ctrl+= / Ctrl+− / Ctrl+0, Ctrl+9 to fit; pinch when gestures are armed.</li>
+    <li><b>3 Feedback:</b> the zoom level appears next to the content and in the status bar.</li>
+    <li><b>4 Closure:</b> entering and leaving presentation mode is a single explicit action.</li>
+    <li><b>5 Error handling:</b> zoom is clamped to a minimum and maximum so text never vanishes.</li>
+    <li><b>6 Reversal:</b> Esc leaves presentation mode; Ctrl+0 resets zoom.</li>
+    <li><b>7 User control:</b> nothing enters presentation mode on its own.</li>
+    <li><b>8 Memory load:</b> a small "Esc to exit" hint stays visible while presenting.</li>
   </ul></div>
 </div>
 
 <!-- TASK 6 -->
 <h2 id="t6">3.6 Enable and calibrate gestures</h2>
-<p class="sub">Storyboard: 6a Settings → 6b Armed HUD. Turn on the camera layer, drag the tracking box, and arm gestures before use.</p>
+<p class="sub">Storyboard: 6a Settings → Camera, drag the tracking area → 6b Settings → Gestures, switch on → 6c back in the viewer, hold an open palm to arm.</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">6a. Settings → Camera</div><div class="body" style="grid-template-columns:130px 1fr">
-      <div class="side">General<br><b>Camera</b><br>Gestures<br>Gesture lab</div>
-      <div class="main"><div class="box" style="min-height:80px">[ live preview ]<br>┌─ tracking box ─┐ drag</div>
-        <div class="box">Camera [ Integrated ▾ ] &nbsp; 30 fps ✓</div><span class="btn fill">Enable gestures</span></div>
-    </div></div>
-    <div class="frame"><div class="cap">6b. Gesture HUD (armed)</div><div class="body"><div class="main">
-      <div class="box add">● Armed · palm scroll · swipe tabs</div><div class="box">No hand detected? Step into the box.</div></div></div></div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>6a.</b> Settings → Camera: preview and tracking area</figcaption>
+    <div class="mock" style="height:345px"><div class="m-ghost"><div class="m-top"><b>Lens</b></div></div><div class="m-shade"></div>
+      <div class="m-modal"><nav><b>Settings</b><span><svg class="i"><use href="#i-palette"/></svg>Appearance</span><span><svg class="i"><use href="#i-type"/></svg>Viewer</span><span><svg class="i"><use href="#i-hand"/></svg>Gestures</span><span class="on"><svg class="i"><use href="#i-camera"/></svg>Camera</span><span><svg class="i"><use href="#i-gauge"/></svg>Gesture lab</span><span><svg class="i"><use href="#i-cmd"/></svg>Shortcuts</span></nav>
+        <section><h6>Camera</h6><span class="m-close"><svg class="i"><use href="#i-x"/></svg></span>
+          <div class="m-dim" style="margin-bottom:4px">Preview &amp; tracking area · drag on the preview to set where your hand is tracked.</div>
+          <div class="m-cam"><svg viewBox="0 0 300 84" preserveAspectRatio="none"><ellipse cx="150" cy="96" rx="70" ry="40" fill="#3a4146"/><circle cx="150" cy="40" r="17" fill="#3a4146"/><rect x="178" y="18" width="104" height="58" rx="5" fill="rgba(236,122,79,.08)" stroke="#ec7a4f" stroke-width="1.5" stroke-dasharray="5 3"/><circle cx="282" cy="76" r="3" fill="#ec7a4f"/><circle cx="178" cy="18" r="3" fill="#ec7a4f"/></svg></div>
+          <div class="m-set"><span>Camera</span><span class="m-select">Integrated Webcam <svg class="i"><use href="#i-updown"/></svg></span></div>
+          <div class="m-set"><span>Resolution · Target frame rate</span><span><span class="m-toggle"><span class="on">480p</span><span>720p</span></span> <span class="m-toggle"><span class="on">30 fps</span><span>45 fps</span></span></span></div>
+          <div class="m-set" style="border:0"><span>Mirror<small>Match what you see in a video call.</small></span><span class="m-switch on"></span></div>
+        </section></div></div></figure>
+
+    <figure class="shot"><figcaption><b>6b.</b> Settings → Gestures: turn on, keep arming required, check the bindings</figcaption>
+    <div class="mock" style="height:345px"><div class="m-ghost"><div class="m-top"><b>Lens</b></div></div><div class="m-shade"></div>
+      <div class="m-modal"><nav><b>Settings</b><span><svg class="i"><use href="#i-palette"/></svg>Appearance</span><span><svg class="i"><use href="#i-type"/></svg>Viewer</span><span class="on"><svg class="i"><use href="#i-hand"/></svg>Gestures</span><span><svg class="i"><use href="#i-camera"/></svg>Camera</span><span><svg class="i"><use href="#i-gauge"/></svg>Gesture lab</span><span><svg class="i"><use href="#i-cmd"/></svg>Shortcuts</span></nav>
+        <section><h6>Gestures</h6><span class="m-close"><svg class="i"><use href="#i-x"/></svg></span>
+          <div class="m-set"><span>Gesture mode<small>Ctrl+Shift+G</small></span><span class="m-switch on"></span></div>
+          <div class="m-set"><span>Require arming<small>Hold an open palm still for 0.6 s first.</small></span><span class="m-switch on"></span></div>
+          <div class="m-set"><span>Auto-disarm after</span><span class="m-select">4 s <svg class="i"><use href="#i-updown"/></svg></span></div>
+          <div class="m-head" style="padding-left:0">Bindings</div>
+          <table class="m-table" style="width:100%"><tr><th>Gesture</th><th>Where</th><th>Action</th></tr><tr><td>Pinch + drag</td><td>Focus</td><td>Scroll</td></tr><tr><td>Both palms</td><td>Focus</td><td>File mode</td></tr></table>
+        </section></div></div></figure>
+
+    <figure class="shot"><figcaption><b>6c.</b> Viewer with gestures armed: HUD at the bottom, live dot in the status bar</figcaption>
+    <div class="mock" style="height:200px"><div class="m-body full" style="min-height:0"><div class="m-main">
+      <div class="m-tabs"><span class="m-tab on"><svg class="i"><use href="#i-file"/></svg>Stage.tsx · diff <span class="x">✕</span></span></div>
+      <div class="m-uni" style="padding-top:4px"><div class="m-hunk cur">@@ -40,4 +41,6 @@</div><div class="m-d"><i>41</i><span>−</span><span>  &lt;Viewer /&gt;</span></div><div class="m-a"><i>42</i><span>+</span><span>  &lt;Viewer zoom={zoom} /&gt;</span></div></div></div></div>
+      <div class="m-hud"><span class="chip toast">Scrolling</span><span class="chip"><span class="m-dot live"></span>Focus: Stage.tsx · Pinch-drag</span></div>
+      <div class="m-status" style="position:absolute;left:0;right:0;bottom:0"><span class="m-mono"><svg class="i"><use href="#i-branch"/></svg> main</span><span class="r"><span><svg class="i"><use href="#i-camera"/></svg></span><span class="m-dot live"></span>Gestures on</span></div></div></figure>
+    <figure class="shot" id="fm"><figcaption><b>6d.</b> File mode (after showing both palms): gestures now move through the file list only</figcaption>
+    <div class="mock">
+      <div class="m-body">
+        <div class="m-side" style="box-shadow:inset 0 0 0 2px var(--m-accent)"><div class="m-seg"><span class="on">Files</span><span>Changes</span></div>
+          <div class="m-file">NEXIS.md</div><div class="m-file on" style="box-shadow:inset 0 0 0 1.5px var(--m-accent)">Stage.tsx</div><div class="m-file">Stage.tsx · diff</div><div class="m-file">README.md</div><div class="m-file">package.json</div></div>
+        <div class="m-main" style="opacity:.35"><div class="m-tabs"><span class="m-tab on">NEXIS.md</span></div><div class="m-doc"><h4>NEXIS.md</h4><p>Drop this file in a project root…</p></div></div>
+      </div>
+      <div class="m-hud"><span class="chip"><span class="m-dot live"></span>File mode · pinch-drag to browse · close hand to open · both palms to go back</span></div>
+      <div class="m-status"><span class="m-mono">main</span><span class="r"><span class="m-dot live"></span>File mode</span></div>
+    </div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> settings pages share one sidebar and control style.</li>
-    <li><b>2 Shortcuts:</b> Ctrl+, opens settings.</li>
-    <li><b>3 Feedback:</b> live preview, fps check, HUD state.</li>
-    <li><b>4 Closure:</b> "Armed" confirms gestures are live.</li>
-    <li><b>5 Error handling:</b> camera denied or under 30 fps explains the fix.</li>
-    <li><b>6 Reversal:</b> auto-disarm and an off switch; the simulator tests safely.</li>
-    <li><b>7 User control:</b> opt-in; gestures never override keyboard or mouse.</li>
-    <li><b>8 Memory load:</b> bindings table lists every gesture.</li>
+    <li><b>1 Consistency:</b> every Settings page shares the same left navigation, rows and switch style.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+, opens Settings; Ctrl+Shift+G turns gestures on or off without opening it.</li>
+    <li><b>3 Feedback:</b> live camera preview with the tracking area drawn on it; the HUD shows armed state, tracking and the last gesture.</li>
+    <li><b>4 Closure:</b> "Armed" and a green dot confirm gestures are live; each command flashes a short label ("Next hunk").</li>
+    <li><b>5 Error handling:</b> the HUD reports "Camera error", "No hand in frame" or "Low confidence" instead of guessing.</li>
+    <li><b>6 Reversal:</b> auto-disarm, a Disarm control and the shortcut switch it all off; the simulator lets people try gestures safely.</li>
+    <li><b>7 User control:</b> gestures are opt-in, need a deliberate arm step, and never block keyboard or mouse.</li>
+    <li><b>8 Memory load:</b> the bindings table lists every gesture, where it works and what it does.</li>
   </ul></div>
 </div>
 
 <!-- TASK 7 -->
 <h2 id="t7">3.7 Benchmark tracking in the Gesture lab</h2>
-<p class="sub">Run a 10 second test to see fps, latency and detection rate, then copy the results.</p>
+<p class="sub">Storyboard: start the camera → run the 10 s benchmark → read the verdict and copy it as Markdown.</p>
 <div class="task">
-  <div class="frames">
-    <div class="frame"><div class="cap">7. Gesture lab</div><div class="body"><div class="main">
-      <div class="box" style="min-height:70px">[ camera + hand skeleton overlay ]</div>
-      <div class="box">fps 30/29 · p50 11ms · p95 19ms · detection 96%</div>
-      <span class="btn fill">Run 10 s</span><span class="btn">Copy as Markdown</span></div></div></div>
+  <div class="shots">
+    <figure class="shot"><figcaption><b>7.</b> Settings → Gesture lab after a run</figcaption>
+    <div class="mock" style="height:310px"><div class="m-ghost"><div class="m-top"><b>Lens</b></div></div><div class="m-shade"></div>
+      <div class="m-modal" style="top:8%;bottom:6%"><nav><b>Settings</b><span><svg class="i"><use href="#i-palette"/></svg>Appearance</span><span><svg class="i"><use href="#i-type"/></svg>Viewer</span><span><svg class="i"><use href="#i-hand"/></svg>Gestures</span><span><svg class="i"><use href="#i-camera"/></svg>Camera</span><span class="on"><svg class="i"><use href="#i-gauge"/></svg>Gesture lab</span><span><svg class="i"><use href="#i-cmd"/></svg>Shortcuts</span></nav>
+        <section><h6>Gesture lab</h6><span class="m-close"><svg class="i"><use href="#i-x"/></svg></span>
+          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span class="m-btn">Stop</span><span class="m-btn">Run 10 s benchmark</span><span class="m-dim" style="margin-left:auto">Inference <span class="m-toggle"><span class="on">GPU</span><span>CPU</span></span></span></div>
+          <div class="m-cam" style="height:80px"><svg viewBox="0 0 300 80"><g stroke="#7fd6a0" stroke-width="1.5" fill="none" stroke-linecap="round"><path d="M150 72 L132 50 L120 36 M150 72 L142 40 L140 18 M150 72 L154 38 L156 14 M150 72 L164 42 L170 22 M150 72 L174 52 L184 40"/></g><g fill="#eef1f2"><circle cx="150" cy="72" r="2.5"/><circle cx="120" cy="36" r="2"/><circle cx="140" cy="18" r="2"/><circle cx="156" cy="14" r="2"/><circle cx="170" cy="22" r="2"/><circle cx="184" cy="40" r="2"/></g><text x="8" y="14" fill="#7fd6a0" font-size="9" font-family="monospace">Open palm · 0.94</text></svg></div>
+          <div class="m-metric"><div><b>23.9 fps</b><small>Processed / 24 camera</small></div><div><b>24 / 34 ms</b><small>Inference p50 / p95</small></div><div><b>99%</b><small>Hand detected</small></div></div>
+          <div class="m-set" style="border:0;margin-top:4px"><span><b style="color:#e6c25a">Verdict: camera-limited (24 of 30 fps)</b><small>1 dropped frame · 6% over budget</small></span><span class="m-btn"><svg class="i"><use href="#i-copy"/></svg> Copy as Markdown</span></div>
+        </section></div></div></figure>
   </div>
   <div class="rules"><h3>Eight Golden Rules</h3><ul>
-    <li><b>1 Consistency:</b> same card style as other settings pages.</li>
-    <li><b>2 Shortcuts:</b> reachable from Ctrl+, then one click.</li>
-    <li><b>3 Feedback:</b> live metrics and an overlay while running.</li>
-    <li><b>4 Closure:</b> a summary appears when the 10 s run ends.</li>
-    <li><b>5 Error handling:</b> a missing camera is reported before the run.</li>
-    <li><b>6 Reversal:</b> Stop ends a run early.</li>
-    <li><b>7 User control:</b> the user starts and stops it.</li>
-    <li><b>8 Memory load:</b> one Markdown copy replaces note-taking.</li>
+    <li><b>1 Consistency:</b> it is one more page in the same Settings window, with the same controls.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+, then one click; one button copies the whole result.</li>
+    <li><b>3 Feedback:</b> live skeleton overlay, the recognised gesture with its confidence, and metrics during the run.</li>
+    <li><b>4 Closure:</b> after 10 s a verdict line states whether the target was met.</li>
+    <li><b>5 Error handling:</b> "Camera off" and a disabled Run button prevent a run with no camera.</li>
+    <li><b>6 Reversal:</b> Stop ends the camera at any time; a run can be repeated.</li>
+    <li><b>7 User control:</b> the user starts the camera and the run, and picks GPU or CPU inference.</li>
+    <li><b>8 Memory load:</b> "Copy as Markdown" replaces writing numbers down.</li>
   </ul></div>
 </div>
+
 <h2 id="t8">3.8 Gesture design</h2>
 <p class="sub">The gesture set is a design decision, not just a recogniser setting. The choices below follow the research summarised here, and every gesture still has a keyboard equivalent.</p>
 <div class="rules"><h3>What the research says, and what we do about it</h3><ul>
@@ -281,7 +611,7 @@ exis-lens ▾ ]</div><span class="btn">Cancel</span><span class="btn fill">Selec
   <li><b>Camera limits.</b> Webcam studies report accuracy falling with distance, dim light and cluttered backgrounds (for example <a href="#ref5">[5]</a>). <i>Decision:</i> target about 2 m, show a frame-rate check in Settings, and treat false positives as worse than misses.</li>
 </ul></div>
 <p class="sub" style="margin-top:20px">Proposed gesture set (matches the current bindings table).</p>
-<svg width="0" height="0" style="position:absolute"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="var(--ring)"/></marker></defs></svg><div class="gcards"><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Arm: hold open palm" style="color:var(--foreground)"><g transform="translate(32,6) scale(0.85)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><circle cx="60" cy="40" r="32" fill="none" stroke="var(--ring)" stroke-width="2" stroke-dasharray="4 4"/></svg><b>Arm: hold open palm</b><span>Turns gestures on</span><em>Everywhere</em><small class="why">Why: a deliberate start avoids Midas touch <a href="#ref1">[1]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Open palm, move" style="color:var(--foreground)"><g transform="translate(30,12) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M100 62 L100 22" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Open palm, move</b><span>Scroll (drag the page)</span><em>Code, Markdown, Diff</em><small class="why">Why: drag-the-page is a familiar direct-manipulation metaphor <a href="#ref4">[4]</a>; small hand motion limits fatigue <a href="#ref3">[3]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Pinch in / out" style="color:var(--foreground)"><g transform="translate(26,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="14" width="8" height="26" rx="4"/><rect x="21" y="24" width="8" height="16" rx="4"/><rect x="31" y="26" width="8" height="14" rx="4"/><rect x="41" y="28" width="8" height="12" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><circle cx="36" cy="30" r="4" fill="var(--ring)"/><path d="M76 30 L98 12" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Pinch in / out</b><span>Zoom at the hand</span><em>Code, Markdown, Diff</em><small class="why">Why: borrowed from touch gestures people already know <a href="#ref4">[4]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Swipe left / right" style="color:var(--foreground)"><g transform="translate(35,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M26 40 L6 40" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/><path d="M94 40 L114 40" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Swipe left / right</b><span>Next / previous tab</span><em>All views</em><small class="why">Why: a quick wrist flick, not a held arm <a href="#ref2">[2]</a><a href="#ref3">[3]</a>; page-turn metaphor <a href="#ref4">[4]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Swipe up / down" style="color:var(--foreground)"><g transform="translate(35,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M20 50 L20 14" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/><path d="M100 30 L100 66" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Swipe up / down</b><span>Next / prev hunk, or page</span><em>Diff; Code, Markdown</em><small class="why">Why: same wrist flick as left/right, so one rule covers all swipes <a href="#ref3">[3]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Closed fist" style="color:var(--foreground)"><g transform="translate(30,12) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="28" width="8" height="12" rx="4"/><rect x="21" y="28" width="8" height="12" rx="4"/><rect x="31" y="28" width="8" height="12" rx="4"/><rect x="41" y="28" width="8" height="12" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g></svg><b>Closed fist</b><span>Unified / split diff</span><em>Diff</em><small class="why">Why: untested. No source here backs it; the guessability test <a href="#ref4">[4]</a> will decide.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Flat-hand flip" style="color:var(--foreground)"><g transform="translate(30,22) scale(0.85)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M22 24 A38 38 0 0 1 98 24" fill="none" stroke="var(--ring)" stroke-width="2" marker-end="url(#ah)"/></svg><b>Flat-hand flip</b><span>Raw / preview</span><em>Markdown</em><small class="why">Why: untested. Kept only if the guessability test <a href="#ref4">[4]</a> supports it.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Two-hand spread" style="color:var(--foreground)"><g transform="translate(-2,14) scale(0.8)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><g transform="translate(74,14) scale(0.8)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M50 44 L38 44" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/><path d="M70 44 L82 44" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Two-hand spread</b><span>Session overview</span><em>Everywhere</em><small class="why">Why: spread means "see more" in touch <a href="#ref4">[4]</a>; rare on purpose since two raised arms tire <a href="#ref2">[2]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Point, then pinch or hold" style="color:var(--foreground)"><g transform="translate(30,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="26" width="8" height="14" rx="4"/><rect x="31" y="26" width="8" height="14" rx="4"/><rect x="41" y="26" width="8" height="14" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><circle cx="41" cy="22" r="5" fill="none" stroke="var(--ring)" stroke-width="2"/></svg><b>Point, then pinch or hold</b><span>Pick a tab, select it</span><em>Overview</em><small class="why">Why: pointing and selecting was studied in Gunslinger <a href="#ref1">[1]</a>.</small></div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="var(--ring)"/></marker><marker id="gah" markerWidth="8" markerHeight="8" refX="5" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 z" fill="var(--gesture)"/></marker></defs></svg><div class="gcards"><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Arm: hold an open palm"><g transform="translate(42 8) scale(0.8 0.8)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><circle cx="82" cy="50" r="44" class="gtrack"/><circle cx="82" cy="50" r="44" class="gprog" pathLength="100" stroke-dasharray="70 100" transform="rotate(-90 82 50)"/><text x="140" y="104" class="gt" text-anchor="end">hold 0.6 s</text></svg><b>Arm: hold an open palm</b><span>Turns gestures on</span><em>Everywhere</em><span class="keys">Keys: Ctrl+Shift+G toggles</span><small class="why">Why: a deliberate start avoids the Midas touch <a href="#ref1">[1]</a>.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Open palm, move"><g transform="translate(34 22) scale(0.8 0.8)" opacity=".45" style="--ho:var(--muted-foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><g transform="translate(34 4) scale(0.8 0.8)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><path d="M124 86 V22" class="ga" marker-end="url(#gah)"/><text x="132" y="58" class="gt">drag</text></svg><b>Open palm, move</b><span>Scroll (drag the page)</span><em>Code, Markdown, Diff</em><span class="keys">Keys: wheel / arrows</span><small class="why">Why: drag-the-page is a familiar direct-manipulation metaphor <a href="#ref4">[4]</a>; small motion limits fatigue <a href="#ref3">[3]</a>.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Pinch in / out"><g transform="translate(40 10) scale(0.85 0.85)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L25 29" class="ho"/><path d="M44 47 L46 14" class="ho"/><path d="M55 48 L59 17" class="ho"/><path d="M66 52 L73 30" class="ho"/><path d="M31 68 L18 49 L23 33" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L25 29" class="hi"/><path d="M44 47 L46 14" class="hi"/><path d="M55 48 L59 17" class="hi"/><path d="M66 52 L73 30" class="hi"/><path d="M31 68 L18 49 L23 33" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><circle cx="60.4" cy="36.349999999999994" r="6" class="gdot"/><path d="M118 64 L146 36" class="ga" marker-end="url(#gah)"/><path d="M146 74 L126 94" class="ga" marker-end="url(#gah)"/><text x="118" y="28" class="gt">out</text><text x="132" y="108" class="gt">in</text></svg><b>Pinch in / out</b><span>Zoom around the hand</span><em>Code, Markdown, Diff</em><span class="keys">Keys: Ctrl+= / Ctrl+−</span><small class="why">Why: borrowed from the touch gesture people already know <a href="#ref4">[4]</a>.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Swipe left / right"><g transform="translate(50 10) scale(0.8 0.8)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><path d="M44 40 h-16" class="gs"/><path d="M44 47 h-13" class="gs"/><path d="M44 54 h-10" class="gs"/><path d="M58 104 H18" class="ga" marker-end="url(#gah)"/><path d="M102 104 H142" class="ga" marker-end="url(#gah)"/><text x="18" y="96" class="gt">next</text><text x="142" y="96" class="gt" text-anchor="end">prev</text></svg><b>Swipe left / right</b><span>Next / previous tab</span><em>All views</em><span class="keys">Keys: Ctrl+Tab / Ctrl+Shift+Tab</span><small class="why">Why: a quick wrist flick, not a held arm <a href="#ref2">[2]</a><a href="#ref3">[3]</a>; page-turn metaphor <a href="#ref4">[4]</a>.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Swipe up / down"><g transform="translate(46 14) scale(0.8 0.8)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><path d="M24 60 V12" class="ga" marker-end="url(#gah)"/><path d="M24 64 V106" class="ga" marker-end="url(#gah)"/><path d="M136 60 V12" class="ga" stroke-dasharray="3 4" marker-end="url(#gah)"/><text x="140" y="70" class="gt" text-anchor="end">flick</text></svg><b>Swipe up / down</b><span>Next / prev hunk, or a page</span><em>Diff; Code, Markdown</em><span class="keys">Keys: ] / [ , PgDn / PgUp</span><small class="why">Why: the same flick as left/right, so one rule covers every swipe <a href="#ref3">[3]</a>.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Closed fist"><g transform="translate(42 14) scale(0.8 0.8)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 47 L33 58" class="ho"/><path d="M44 45 L44 57" class="ho"/><path d="M55 46 L55 57" class="ho"/><path d="M66 49 L65 58" class="ho"/><path d="M27 70 L46 63" class="ho"/><path d="M33 47 L33 58" class="hi"/><path d="M44 45 L44 57" class="hi"/><path d="M55 46 L55 57" class="hi"/><path d="M66 49 L65 58" class="hi"/><path d="M27 70 L46 63" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><path d="M128 30 a14 14 0 1 1 -10 -4" class="ga" marker-end="url(#gah)"/><text x="126" y="72" class="gt" text-anchor="middle">close</text></svg><b>Closed fist</b><span class="tag">Untested</span><span>Unified / split diff</span><em>Diff</em><span class="keys">Keys: Ctrl+Shift+U</span><small class="why">Why: no source here backs it; the guessability test <a href="#ref4">[4]</a> will decide.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Flat-hand flip"><g transform="translate(6 18) scale(0.66 0.66)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><g transform="translate(154.0 18) scale(-0.66 0.66)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M34 56 h4 M45 54 h4 M56 55 h4 M65 58 h4" class="hd"/></g><path d="M60 18 Q80 2 100 18" class="ga" marker-end="url(#gah)"/><text x="38" y="108" class="gt" text-anchor="middle">palm</text><text x="122" y="108" class="gt" text-anchor="middle">back</text></svg><b>Flat-hand flip</b><span class="tag">Untested</span><span>Raw / Preview</span><em>Markdown</em><span class="keys">Keys: Ctrl+Shift+V</span><small class="why">Why: kept only if the guessability test <a href="#ref4">[4]</a> supports it.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Two-hand spread"><g transform="translate(76.0 8) scale(-0.62 0.62)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><g transform="translate(84 8) scale(0.62 0.62)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 20" class="ho"/><path d="M44 47 L44 12" class="ho"/><path d="M55 48 L58 15" class="ho"/><path d="M66 52 L72 28" class="ho"/><path d="M31 68 L19 55 L13 45" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 20" class="hi"/><path d="M44 47 L44 12" class="hi"/><path d="M55 48 L58 15" class="hi"/><path d="M66 52 L72 28" class="hi"/><path d="M31 68 L19 55 L13 45" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><path d="M64 102 H30" class="ga" marker-end="url(#gah)"/><path d="M96 102 H130" class="ga" marker-end="url(#gah)"/></svg><b>Two-hand spread</b><span>Open the session overview</span><em>Everywhere</em><span class="keys">Keys: Ctrl+G</span><small class="why">Why: spread means "see more" on touch screens <a href="#ref4">[4]</a>; rare on purpose since two raised arms tire <a href="#ref2">[2]</a>.</small></div><div class="gcard"><svg class="hand" viewBox="0 0 160 112" role="img" aria-label="Point, then pinch or hold"><rect x="96" y="8" width="54" height="34" rx="5" class="gcardbox"/><rect x="102" y="16" width="30" height="3" rx="1.5" class="gline"/><rect x="102" y="23" width="40" height="3" rx="1.5" class="gline"/><g transform="translate(26 16) scale(0.85 0.85)" style="--ho:var(--foreground);--hi:var(--card)"><path d="M40 78 L62 78 L60 100 L42 100 Z" class="ho"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="ho"/><path d="M33 50 L29 11" class="ho"/><path d="M40 78 L62 78 L60 100 L42 100 Z" class="hi"/><path d="M30 52 L70 50 L68 76 Q52 84 36 78 Z" class="hi"/><path d="M33 50 L29 11" class="hi"/><path d="M44 45 L44 57" class="ho"/><path d="M55 46 L55 57" class="ho"/><path d="M66 49 L65 58" class="ho"/><path d="M27 70 L41 62" class="ho"/><path d="M44 45 L44 57" class="hi"/><path d="M55 46 L55 57" class="hi"/><path d="M66 49 L65 58" class="hi"/><path d="M27 70 L41 62" class="hi"/><path d="M40 70 Q50 64 60 68" class="hd"/></g><circle cx="50.65" cy="25.35" r="7" class="gring"/><path d="M58 18 Q80 6 94 22" class="ga" stroke-dasharray="3 4" marker-end="url(#gah)"/><text x="124" y="60" class="gt" text-anchor="middle">pinch or</text><text x="124" y="72" class="gt" text-anchor="middle">hold to open</text></svg><b>Point, then pinch or hold</b><span>Pick a tab and open it</span><em>Overview</em><span class="keys">Keys: arrows + Enter</span><small class="why">Why: pointing and selecting on a large display was studied in Gunslinger <a href="#ref1">[1]</a>.</small></div></div>
 <h3 style="margin-top:20px">Arming flow</h3>
 <svg viewBox="0 0 640 124" width="100%" role="img" aria-label="Arming state machine" style="max-width:640px;color:var(--foreground)">
 <g font-family="var(--font-sans)" font-size="12" fill="currentColor" stroke="currentColor" stroke-width="1.4">
@@ -325,6 +655,36 @@ exis-lens ▾ ]</div><span class="btn">Cancel</span><span class="btn fill">Selec
   <li>Measure fps, latency and detection rate in the Gesture lab on target hardware.</li>
   <li>Count accidental commands over five minutes of normal presenting (the roadmap's done criterion), and add recorded-landmark tests for each classifier.</li>
 </ul>
+
+<h3 id="detect" style="margin-top:20px">How each gesture is recognised</h3>
+<p class="sub">MediaPipe returns 21 landmarks per hand. <code>recognizer.ts</code> first sorts each frame into one of five poses using finger geometry, then turns pose plus motion over time into events. Distances are divided by palm size (wrist to middle knuckle), so the thresholds hold whether the user is near the camera or far from it.</p>
+<div style="overflow-x:auto"><table class="dt">
+<tr><th>Gesture</th><th>Detected when</th><th>Fires</th><th>Why this rule</th></tr>
+<tr><td><b>Open palm</b> (pose)</td><td>At least 4 fingers extended (fingertip more than 1.15× further from the wrist than its middle joint)</td><td>n/a</td><td>Counting extended fingers is cheap and does not depend on hand size.</td></tr>
+<tr><td><b>Arm</b></td><td>Open palm moving under 0.18 frame-widths/s for 600 ms</td><td>Once per hold</td><td>Holding still is deliberate and rare in normal movement, which addresses the Midas touch <a href="#ref1">[1]</a>.</td></tr>
+<tr><td><b>Palm move</b> (scroll)</td><td>Open palm moving, not swiping, not arming; movement above a 0.25% dead zone</td><td>Every frame (continuous)</td><td>The dead zone filters tracking jitter; relative motion means the arm can stay low <a href="#ref3">[3]</a>.</td></tr>
+<tr><td><b>Swipe</b></td><td>Palm speed at least 0.9 frame-widths/s, the main axis 1.8× faster than the other, at least 10% travel in 250 ms; not a fist or pinch</td><td>Once, then 380 ms refractory</td><td>The axis ratio stops diagonals firing; the refractory period stops the return stroke counting as an opposite swipe.</td></tr>
+<tr><td><b>Pinch</b> (zoom)</td><td>Thumb-to-index distance under 0.28 palm sizes closes the pinch; it reopens above 0.40</td><td>Every frame the ratio changes by more than 1.2%</td><td>The gap between 0.28 and 0.40 (hysteresis) stops flicker at the boundary.</td></tr>
+<tr><td><b>Select</b></td><td>Pinch closes and reopens within 420 ms</td><td>Once</td><td>A quick tap reads as a click; a longer pinch stays a zoom.</td></tr>
+<tr><td><b>Point</b></td><td>Index extended (or reaching more than 1.2 palm sizes), other fingers curled, thumb tucked</td><td>Every frame (continuous)</td><td>It drives a cursor in the overview, so it has to update each frame.</td></tr>
+<tr><td><b>Fist</b></td><td>No fingers extended and index tip within 1.15 palm sizes of the wrist, held 140 ms</td><td>Once per hold</td><td>The 140 ms hold skips fists that only pass through on the way to another pose.</td></tr>
+<tr><td><b>Palm flip</b></td><td>Open palm whose facing (sign of the palm normal) changes within 700 ms</td><td>Once, then 700 ms lockout</td><td>The palm normal is computed from the wrist and two knuckles, so it needs no depth camera.</td></tr>
+<tr><td><b>Two-hand spread</b></td><td>Two hands visible and the distance between palms grows by over 18% of frame width within 500 ms</td><td>Once, then 1 s lockout</td><td>It needs two hands, so it can't fire by accident during one-handed use.</td></tr>
+</table></div>
+<p class="sub" style="margin-top:8px">Only the highest-confidence ("primary") hand drives one-hand gestures, so two hands never fire twice. The dispatcher adds the safety layer on top: a confidence floor, the arming gate, auto-disarm after 4 s and a 450 ms cooldown between discrete commands.</p>
+
+<h3 id="bench" style="margin-top:20px">First benchmark result</h3>
+<p class="sub">Gesture lab, 10 s run, GPU delegate, 640×480, macOS (WebKit).</p>
+<div style="overflow-x:auto"><table class="dt">
+<tr><th>Metric</th><th>Result</th><th>Reading</th></tr>
+<tr><td>Camera / processed</td><td>24.0 / 23.9 fps</td><td>Below the 30 fps target, but the camera itself delivered only 24 fps, and nearly every frame it sent was processed. The webcam is the limit, not the model.</td></tr>
+<tr><td>Inference mean / p50 / p95 / p99 / max</td><td>23.5 / 24 / 34 / 43 / 49 ms</td><td>The median fits a 30 fps budget (33.3 ms). 6% of frames go over it, so 30 fps would drop the occasional frame.</td></tr>
+<tr><td>Latency p50 / p95</td><td>39 / 60 ms</td><td>Well under the roughly 100 ms at which a response stops feeling instant.</td></tr>
+<tr><td>Hand detected</td><td>99%, confidence 0.98</td><td>Tracking quality is not a problem in these conditions.</td></tr>
+<tr><td>Model load</td><td>2853 ms</td><td>Long enough to notice. The HUD's "Starting camera…" state has to cover it.</td></tr>
+<tr><td>Gestures</td><td>Point 50, Palm 4, Arm 2, Fist 1</td><td>These counts use different units. Point and Palm are counted per frame (50 frames ≈ 2.1 s of pointing); Arm and Fist are counted once per gesture. So this run was about 2 s of pointing, two arms and one fist, not 50 separate points.</td></tr>
+</table></div>
+<p class="sub" style="margin-top:8px"><b>Next steps:</b> (1) run again in better light or at 720p to see if the camera reaches 30 fps; macOS webcams often drop frame rate in dim light. (2) Report continuous gestures in seconds in the lab, so the table uses one unit. (3) Repeat on the Windows target laptop.</p>
 <h2 id="sys">4. Non-interface components</h2>
 <p class="sub">Critical system pieces behind the screens, and how each is implemented.</p>
 <div class="rules"><ul>
