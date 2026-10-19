@@ -128,6 +128,8 @@ function ChangeRow({ change, letter, item }: { change: Change; letter: string; i
     <button
       type="button"
       onClick={open}
+      data-pick="item"
+      data-pick-active={active || undefined}
       title={change.oldPath ? `${change.oldPath} → ${change.path}` : change.path}
       className={cn(
         "flex h-7 w-full items-center gap-2 rounded-md px-2 text-left transition-colors",
@@ -161,6 +163,8 @@ function OpenRow({
     <button
       type="button"
       onClick={open}
+      data-pick="item"
+      data-pick-active={active || undefined}
       className={cn(
         "flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left transition-colors",
         active ? "bg-accent" : "hover:bg-accent/60",

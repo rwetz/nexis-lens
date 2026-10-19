@@ -5,8 +5,8 @@
 //
 //   1. Per frame, classify each hand's pose from finger geometry.
 //   2. Over time, per hand, turn pose + motion into events: hold-to-arm,
-//      palm scroll, pinch zoom, pinch-click, swipes, fist, palm flip, and the
-//      two-hand spread.
+//      palm scroll, pinch zoom, pinch-click, pinch-drag, swipes, fist, grab,
+//      palm flip, and the two-hand gestures (spread, pinch zoom, both palms).
 //
 // Coordinates: landmarks arrive in raw camera space (0..1). They are mirrored
 // into display space first; events are then expressed relative to the
@@ -78,6 +78,8 @@ const SPREAD_MIN_GROWTH = 0.18;
 const MOVE_DEADZONE = 0.0025;
 const ZOOM_DEADZONE = 0.012;
 const LOST_AFTER_MS = 250;
+const GRAB_WINDOW_MS = 600;
+const BOTH_PALMS_HOLD_MS = 500;
 
 type Sample = { t: number; x: number; y: number };
 
@@ -97,6 +99,10 @@ type Track = {
   pinchClosedAt: number | null;
   pinchClosed: boolean;
   zoomRatio: number | null;
+  /** Thumb and index held together (with hysteresis), tracked for every hand. */
+  held: boolean;
+  /** Last time this hand was open — a fist soon after is a grab. */
+  lastOpen: number;
 };
 
 const dist = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
@@ -106,11 +112,17 @@ export class GestureRecognizer {
   private primaryId: string | null = null;
   private spread: Sample[] = [];
   private lastSpread = -Infinity;
+  private bothStill: number | null = null;
+  private bothFired = false;
+  private twoPinch: number | null = null;
 
   reset() {
     this.tracks.clear();
     this.primaryId = null;
     this.spread = [];
+    this.bothStill = null;
+    this.bothFired = false;
+    this.twoPinch = null;
   }
 
   update(input: HandInput[], t: number, cfg: RecognizerConfig): RecognizerOutput {
@@ -137,6 +149,8 @@ export class GestureRecognizer {
         track.pose = pose;
         track.poseSince = t;
       }
+      if (pose === "open") track.lastOpen = t;
+      track.held = track.held ? geo.pinchRatio <= PINCH_OPEN : geo.pinchRatio < PINCH_CLOSED && pose !== "fist";
 
       const palm = palmCentre(points);
       track.history.push({ t, x: palm.x, y: palm.y });
@@ -168,16 +182,16 @@ export class GestureRecognizer {
     if (!hands.some((h) => h.id === this.primaryId)) {
       this.primaryId = hands.length ? [...hands].sort((a, b) => b.score - a.score)[0].id : null;
     }
+    // Two-hand gestures first: while both hands pinch, the primary must not also scroll.
+    const twoHandPinch = this.twoHands(seen, t, cfg, events);
     for (const { track, hand, geo, palm } of seen) {
       if (hand.id === this.primaryId) {
         hand.primary = true;
-        this.singleHand(track, hand, geo, palm, t, cfg, events);
+        this.singleHand(track, hand, geo, palm, t, cfg, events, twoHandPinch);
       }
       track.palm = palm;
     }
     const primary = hands.find((h) => h.primary);
-
-    this.twoHands(hands, t, events);
 
     const confidence = primary?.score ?? 0;
     return { hands, events: events.map((e) => ({ ...e, confidence: e.confidence || confidence })) };
@@ -191,6 +205,7 @@ export class GestureRecognizer {
     t: number,
     cfg: RecognizerConfig,
     events: GestureEvent[],
+    twoHandPinch: boolean,
   ) {
     const meta = { confidence: hand.score, timestamp: t };
     const f = cfg.framing;
@@ -226,11 +241,19 @@ export class GestureRecognizer {
       if (Math.hypot(dx, dy) > MOVE_DEADZONE) events.push({ type: "palm-move", dx, dy, ...meta });
     }
 
-    // Fist, held briefly → once.
+    // Pinch held while the hand moves → drag (scroll or move a highlight).
+    if (track.held && !twoHandPinch && track.palm) {
+      const dx = (palm.x - track.palm.x) / f.w;
+      const dy = (palm.y - track.palm.y) / f.h;
+      if (Math.hypot(dx, dy) > MOVE_DEADZONE) events.push({ type: "pinch-drag", dx, dy, ...meta });
+    }
+
+    // Fist, held briefly → once. Closing from an open hand is a grab instead.
     if (hand.pose === "fist") {
       if (!track.fistFired && t - track.poseSince >= FIST_HOLD_MS) {
         track.fistFired = true;
-        events.push({ type: "fist", ...meta });
+        const grab = track.poseSince - track.lastOpen < GRAB_WINDOW_MS;
+        events.push({ type: grab ? "grab" : "fist", ...meta });
       }
     } else track.fistFired = false;
 
@@ -269,12 +292,54 @@ export class GestureRecognizer {
     if (hand.pose === "point") events.push({ type: "point", at: toBox(hand.points[INDEX_TIP]), ...meta });
   }
 
-  private twoHands(hands: TrackedHand[], t: number, events: GestureEvent[]) {
-    if (hands.length < 2) {
+  /** Returns whether both hands are pinching (a two-hand zoom is in progress). */
+  private twoHands(
+    seen: Array<{ track: Track; hand: TrackedHand }>,
+    t: number,
+    cfg: RecognizerConfig,
+    events: GestureEvent[],
+  ): boolean {
+    if (seen.length < 2) {
       this.spread = [];
-      return;
+      this.bothStill = null;
+      this.bothFired = false;
+      this.twoPinch = null;
+      return false;
     }
-    const [a, b] = hands;
+    const [a, b] = seen.map((s) => s.hand);
+    const [ta, tb] = seen.map((s) => s.track);
+    const meta = { confidence: Math.min(a.score, b.score), timestamp: t };
+
+    // Both open palms held still → once per hold.
+    if (a.pose === "open" && b.pose === "open" && a.speed < HOLD_STILL_SPEED && b.speed < HOLD_STILL_SPEED) {
+      this.bothStill ??= t;
+      if (!this.bothFired && t - this.bothStill >= BOTH_PALMS_HOLD_MS) {
+        this.bothFired = true;
+        events.push({ type: "both-palms", ...meta });
+      }
+    } else {
+      this.bothStill = null;
+      this.bothFired = false;
+    }
+
+    // Both hands pinching → zoom by the change in distance between the pinches.
+    const pinching = ta.held && tb.held;
+    if (pinching) {
+      const pa = pinchPoint(a.points);
+      const pb = pinchPoint(b.points);
+      const d = Math.max(1e-6, dist(pa, pb));
+      if (this.twoPinch === null) this.twoPinch = d;
+      else {
+        const scale = d / this.twoPinch;
+        if (Math.abs(scale - 1) > ZOOM_DEADZONE) {
+          const f = cfg.framing;
+          const mid = { x: (pa.x + pb.x) / 2, y: (pa.y + pb.y) / 2 };
+          events.push({ type: "two-hand-pinch", scale, center: { x: (mid.x - f.x) / f.w, y: (mid.y - f.y) / f.h }, ...meta });
+          this.twoPinch = d;
+        }
+      }
+    } else this.twoPinch = null;
+
     const d = dist(palmCentre(a.points), palmCentre(b.points));
     this.spread.push({ t, x: d, y: 0 });
     while (this.spread.length && t - this.spread[0].t > SPREAD_WINDOW_MS) this.spread.shift();
@@ -284,6 +349,7 @@ export class GestureRecognizer {
       this.spread = [];
       events.push({ type: "two-hand-spread", confidence: Math.min(a.score, b.score), timestamp: t });
     }
+    return pinching;
   }
 }
 
@@ -304,6 +370,8 @@ function newTrack(id: string, t: number): Track {
     pinchClosedAt: null,
     pinchClosed: false,
     zoomRatio: null,
+    held: false,
+    lastOpen: -Infinity,
   };
 }
 
@@ -354,6 +422,10 @@ function classify(g: Geometry, pinchClosed: boolean): HandPose {
   if (up >= 4) return "open";
   if (others === 0 && (index || g.indexReach > 1.2)) return g.thumbOut ? "pinch" : "point";
   return "other";
+}
+
+function pinchPoint(p: Point[]): Point {
+  return { x: (p[THUMB_TIP].x + p[INDEX_TIP].x) / 2, y: (p[THUMB_TIP].y + p[INDEX_TIP].y) / 2 };
 }
 
 function palmCentre(p: Point[]): Point {

@@ -14,6 +14,7 @@ import { spring } from "@nexis/design";
 import { cn } from "@/lib/utils";
 import { COMMAND_TITLES } from "@/modules/commands/registry";
 import { useUi } from "@/modules/shell/uiStore";
+import { useActiveTab } from "@/modules/tabs/store";
 import { useGestures } from "./store";
 import type { GestureType, TrackingStatus } from "./types";
 
@@ -28,6 +29,10 @@ export const GESTURE_LABELS: Record<GestureType, string> = {
   "two-hand-spread": "Spread",
   point: "Point",
   select: "Select",
+  "pinch-drag": "Drag",
+  "two-hand-pinch": "Zoom",
+  "both-palms": "Both palms",
+  grab: "Grab",
 };
 
 const STATUS_TEXT: Record<TrackingStatus, string> = {
@@ -55,6 +60,13 @@ export function GestureHud() {
   }, [feedback]);
 
   const lowLight = enabled && (status === "low-confidence" || status === "no-hand");
+  const mode = useGestures((s) => s.mode);
+  const armed = useGestures((s) => s.armed || !s.requireArming);
+  const tab = useActiveTab();
+  const modeText =
+    mode === "files"
+      ? "File mode · pinch-drag to browse · close your hand to open · both palms to go back"
+      : `Focus: ${tab?.title ?? "no file"} · both palms for files`;
 
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-8 z-40 flex flex-col items-center gap-2">
@@ -77,6 +89,22 @@ export function GestureHud() {
             <span className="text-base font-medium">
               {feedback.command ? COMMAND_TITLES[feedback.command] : feedback.note}
             </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {enabled && showHud && (armed || mode === "files") && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={cn(
+              "flex items-center gap-2 rounded-full border border-border/70 bg-popover/90 px-3 py-1 text-xs text-muted-foreground shadow-sm backdrop-blur",
+              mode === "files" && "border-brand/60 text-foreground",
+            )}
+          >
+            <span className={cn("size-1.5 rounded-full", mode === "files" ? "bg-brand" : "bg-emerald-500")} />
+            {modeText}
           </motion.div>
         )}
       </AnimatePresence>

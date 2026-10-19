@@ -57,7 +57,11 @@ type GestureRuntime = {
   feedback: GestureFeedback | null;
   /** The Gesture lab owns the camera; live gesture mode pauses meanwhile. */
   labActive: boolean;
+  /** What gestures act on: the open file, or the sidebar list (see ./picker.ts). */
+  mode: GestureMode;
 };
+
+export type GestureMode = "focus" | "files";
 
 type GestureState = GestureConfig &
   GestureRuntime & {
@@ -96,6 +100,7 @@ export const useGestures = create<GestureState>()(
       stats: null,
       feedback: null,
       labActive: false,
+      mode: "focus",
       setConfig: (patch) => set(patch),
       resetConfig: () => set(DEFAULT_GESTURE_CONFIG),
       setRuntime: (patch) => set(patch),
@@ -104,7 +109,7 @@ export const useGestures = create<GestureState>()(
       name: "lens-gestures",
       version: 1,
       partialize: (s) => {
-        const { status: _s, statusDetail: _d, armed: _a, stats: _t, feedback: _f, labActive: _l, setConfig: _1, resetConfig: _2, setRuntime: _3, ...config } = s;
+        const { status: _s, statusDetail: _d, armed: _a, stats: _t, feedback: _f, labActive: _l, mode: _m, setConfig: _1, resetConfig: _2, setRuntime: _3, ...config } = s;
         return config;
       },
     },

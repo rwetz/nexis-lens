@@ -236,12 +236,12 @@ MediaPipe returns 21 landmarks per hand. `recognizer.ts` sorts each frame into o
 | Open palm (pose) | At least 4 fingers extended (tip more than 1.15× further from the wrist than its middle joint) | Exists |
 | Arm | Open palm moving under 0.18 frame-widths/s for 600 ms | Exists |
 | Pinch (pose) | Thumb–index gap under 0.28 palm sizes; released above 0.40 (the gap stops flicker) | Exists |
-| Pinch-drag | While pinched, palm movement above a small dead zone becomes scroll | **New**: today pinch only zooms |
-| Two-hand pinch zoom | Both hands pinched; the change in distance between the pinch points sets the zoom | **New** |
+| Pinch-drag | While pinched, palm movement above a small dead zone becomes scroll | Built |
+| Two-hand pinch zoom | Both hands pinched; the change in distance between the pinch points sets the zoom | Built |
 | Flip | Open palm whose facing (sign of the palm normal from wrist and two knuckles) changes within 700 ms | Exists |
-| Both palms | Two open hands, both nearly still, for 500 ms | **New** (today two hands only detect a spread) |
-| Grab | Open pose followed by fist within ~500 ms, held 140 ms | Fist exists; the open→fist sequence is **new** |
-| Mode lock | Dispatcher only resolves bindings for the current mode | **New**: replaces the per-view contexts in `bindings.ts` |
+| Both palms | Two open hands, both nearly still, for 500 ms | Built |
+| Grab | Open pose followed by fist within ~500 ms, held 140 ms | Built |
+| Mode lock | Dispatcher only resolves bindings for the current mode | Built (`bindings.ts`, `picker.ts`) |
 
 Only the highest-confidence hand drives one-hand gestures, so two hands never fire twice. The dispatcher adds a confidence floor, the arming gate, auto-disarm after 4 s and a 450 ms cooldown between discrete commands.
 

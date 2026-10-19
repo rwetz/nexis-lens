@@ -40,6 +40,14 @@ export type GestureEvent = Meta &
     | { type: "point"; at: Point }
     /** Discrete: pinch-click or dwell on the pointed item. */
     | { type: "select" }
+    /** Continuous: thumb and index held together while the hand moves. Deltas as palm-move. */
+    | { type: "pinch-drag"; dx: number; dy: number }
+    /** Continuous: both hands pinched; distance between the pinches since the last event (>1 = apart). */
+    | { type: "two-hand-pinch"; scale: number; center: Point }
+    /** Discrete: both open palms held still — leave or return to the focused file. */
+    | { type: "both-palms" }
+    /** Discrete: an open hand closes into a fist — take the highlighted item. */
+    | { type: "grab" }
   );
 
 export type GestureType = GestureEvent["type"];
@@ -51,6 +59,8 @@ export const DISCRETE: ReadonlySet<GestureType> = new Set([
   "palm-flip",
   "two-hand-spread",
   "select",
+  "both-palms",
+  "grab",
 ]);
 
 /** What the recogniser reports about itself every frame (or every N frames). */
