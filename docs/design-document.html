@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexis Lens Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* Tokens copied from @nexis/design (src/styles/globals.css) and Lens (src/styles/lens.css). */
+  :root {
+    --background: oklch(1 0 0); --foreground: oklch(0.148 0.004 228.8);
+    --card: oklch(1 0 0); --primary: oklch(0.218 0.008 223.9); --primary-foreground: oklch(0.987 0.002 197.1);
+    --muted: oklch(0.963 0.002 197.1); --muted-foreground: oklch(0.56 0.021 213.5);
+    --accent: oklch(0.963 0.002 197.1); --border: oklch(0.925 0.005 214.3);
+    --sidebar: oklch(0.987 0.002 197.1); --ring: oklch(0.488 0.243 264.376);
+    --diff-add: color-mix(in oklch, oklch(0.72 0.17 150) 16%, transparent); --diff-add-fg: oklch(0.52 0.15 150);
+    --diff-del: color-mix(in oklch, oklch(0.65 0.2 25) 14%, transparent); --diff-del-fg: oklch(0.55 0.19 25);
+    --radius: 0.625rem;
+    --font-sans: 'Geist','Geist Variable','Inter',system-ui,sans-serif;
+    --font-mono: 'Geist Mono','JetBrains Mono',ui-monospace,Menlo,monospace;
+    --font-heading: 'Space Grotesk','Geist',system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root {
+    --background: oklch(0.148 0.004 228.8); --foreground: oklch(0.987 0.002 197.1);
+    --card: oklch(0.218 0.008 223.9); --primary: oklch(0.925 0.005 214.3); --primary-foreground: oklch(0.218 0.008 223.9);
+    --muted: oklch(0.275 0.011 216.9); --muted-foreground: oklch(0.723 0.014 214.4);
+    --accent: oklch(0.275 0.011 216.9); --border: oklch(1 0 0 / 10%);
+    --sidebar: oklch(0.218 0.008 223.9);
+    --diff-add-fg: oklch(0.78 0.15 150); --diff-del-fg: oklch(0.74 0.15 25);
+  } }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:32px 16px 64px; background:var(--background); color:var(--foreground); font:15px/1.55 var(--font-sans); }
+  main { max-width:1040px; margin:0 auto; }
+  h1,h2 { font-family:var(--font-heading); letter-spacing:-0.01em; }
+  h1 { margin:0 0 4px; font-size:32px; } h2 { margin:52px 0 4px; font-size:22px; } h3 { margin:0 0 6px; font-size:14px; font-weight:600; }
+  code { font-family:var(--font-mono); font-size:.9em; background:var(--muted); padding:1px 5px; border-radius:4px; }
+  a { color:var(--foreground); text-underline-offset:3px; }
+  p.sub { color:var(--muted-foreground); margin:0 0 16px; }
+  .task { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:24px; align-items:start; margin-top:16px; }
+  @media (max-width:760px){ .task { grid-template-columns:1fr; } }
+  .frames { display:flex; flex-direction:column; gap:14px; }
+  .frame { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; font:12px/1.4 var(--font-sans); box-shadow:0 1px 2px oklch(0 0 0 / 6%); }
+  .frame > .cap { padding:5px 12px; background:var(--muted); color:var(--muted-foreground); border-bottom:1px solid var(--border); font-size:11px; font-weight:500; }
+  .body { display:grid; min-height:170px; }
+  .title { grid-column:1/-1; display:flex; justify-content:space-between; padding:6px 12px; background:var(--sidebar); border-bottom:1px solid var(--border); color:var(--muted-foreground); }
+  .side { background:var(--sidebar); border-right:1px solid var(--border); padding:10px; min-width:0; font-family:var(--font-mono); font-size:11px; }
+  .main { padding:12px; min-width:0; }
+  .status { grid-column:1/-1; border-top:1px solid var(--border); background:var(--sidebar); padding:4px 12px; color:var(--muted-foreground); display:flex; justify-content:space-between; gap:8px; font-size:11px; }
+  .box { border:1px solid var(--border); border-radius:calc(var(--radius) * .6); padding:6px 9px; margin:4px 0; background:var(--muted); font-family:var(--font-mono); font-size:11px; }
+  .btn { display:inline-block; border:1px solid var(--border); background:var(--card); border-radius:calc(var(--radius) * .6); padding:3px 10px; margin:2px 4px 2px 0; font-weight:500; }
+  .btn.fill { background:var(--primary); color:var(--primary-foreground); border-color:var(--primary); }
+  .row { display:flex; gap:8px; flex-wrap:wrap; }
+  .tab { display:inline-block; padding:2px 9px; border:1px solid var(--border); border-bottom:none; border-radius:6px 6px 0 0; margin-right:3px; color:var(--muted-foreground); }
+  .tab.on { background:var(--muted); color:var(--foreground); }
+  .add { background:var(--diff-add); color:var(--diff-add-fg); } .del { background:var(--diff-del); color:var(--diff-del-fg); }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  .cursor { color:var(--ring); font-weight:700; }
+  .rules ul { margin:0; padding-left:18px; } .rules li { margin-bottom:6px; }
+  .rules b { font-weight:600; }
+  nav.toc { margin:12px 0; display:flex; flex-wrap:wrap; gap:6px 14px; font-size:14px; }
+  ol li { margin-bottom:6px; }
+  .gcards { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .gcard { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:10px; display:flex; flex-direction:column; gap:2px; font-size:12px; }
+  .gcard b { font-size:13px; margin-top:4px; } .gcard span, .gcard em { color:var(--muted-foreground); font-style:normal; }
+  .gcard .why { font-size:11px; margin-top:4px; border-top:1px solid var(--border); padding-top:4px; }
+  .refs { font-size:13px; color:var(--muted-foreground); } .refs a, .gcard a { color:var(--foreground); }
+</style>
+</head>
+<body>
+<main>
+<h1>Nexis Lens: Design Document</h1>
+<p class="sub">A gesture-augmented viewer for presenting code, git diffs and markdown. Keyboard and mouse do everything; hand gestures are an optional extra layer.</p>
+<nav class="toc">
+  <a href="#s2">2 Tasks</a><a href="#t1">3.1 Open</a><a href="#t2">3.2 Browse</a><a href="#t3">3.3 Diff</a>
+  <a href="#t4">3.4 Tabs</a><a href="#t5">3.5 Zoom</a><a href="#t6">3.6 Gestures</a><a href="#t7">3.7 Lab</a><a href="#t8">3.8 Gesture design</a><a href="#sys">4 System</a>
+</nav>
+
+<h2 id="s2">2. Tasks</h2>
+<ol>
+  <li><b>Open a workspace:</b> choose a local folder (or reopen a recent one) so its files and git state appear in the sidebar.</li>
+  <li><b>Browse and read files:</b> select files in the tree, scroll, search with Ctrl+F, and switch markdown between raw and preview.</li>
+  <li><b>Review a git diff:</b> view working-tree changes or a past commit, step through hunks, and choose unified or split layout.</li>
+  <li><b>Switch tabs and use the session overview:</b> move between open items or jump to any of them from a grid.</li>
+  <li><b>Zoom and present:</b> scale content for a room and enter presentation mode with the interface hidden.</li>
+  <li><b>Enable and calibrate gestures:</b> turn on the camera, set the tracking box, and arm gestures so hand movements control the app.</li>
+  <li><b>Benchmark tracking in the Gesture lab:</b> run a 10 second test of frame rate, latency and detection rate, then copy the results.</li>
+</ol>
+
+<h2 id="s3">3. Prototypes</h2>
+<p class="sub">Low-fidelity wireframes per task. Multi-step tasks are storyboards: read the frames top to bottom. Each is explained with Shneiderman's Eight Golden Rules.</p>
+
+<!-- TASK 1 -->
+<h2 id="t1">3.1 Open a workspace</h2>
+<p class="sub">Storyboard: 1a Welcome → 1b Pick folder → 1c Workspace loaded (or 1d error).</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">1a. Welcome</div><div class="body">
+      <div class="title"><span>Nexis Lens</span><span>_ □ ✕</span></div>
+      <div class="main" style="text-align:center">
+        <h3>Present code, diffs and markdown</h3>
+        <div class="row" style="justify-content:center"><span class="btn fill">Open folder… Ctrl+O</span></div>
+        <div class="box" style="text-align:left">Recent<br>▸ nexis-lens &nbsp; C:\Dev
+exis-lens<br>▸ my-notes &nbsp; C:\Dev\my-notes</div>
+      </div>
+    </div></div>
+    <div class="frame"><div class="cap">1b. Native folder picker</div><div class="body"><div class="main">
+      <div class="box">Select a folder &nbsp; [ C:\Dev
+exis-lens ▾ ]</div><span class="btn">Cancel</span><span class="btn fill">Select folder</span></div></div></div>
+    <div class="frame"><div class="cap">1c. Workspace loaded</div><div class="body" style="grid-template-columns:150px 1fr">
+      <div class="title"><span>Nexis Lens — nexis-lens</span><span>_ □ ✕</span></div>
+      <div class="side">Files | Changes | History<br>▾ src<br>&nbsp;▸ app<br>README.md</div>
+      <div class="main"><div class="box">Select a file to start reading.</div></div>
+      <div class="status"><span>nexis-lens · branch main</span><span>Gestures: off</span></div>
+    </div></div>
+    <div class="frame"><div class="cap">1d. Error state</div><div class="body"><div class="main">
+      <div class="box del">✕ Could not open that folder: access denied.</div><span class="btn">Choose another</span></div></div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> primary actions use the same filled button style across the app.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+O to open; the recent list reopens in one click.</li>
+    <li><b>3 Feedback:</b> the title bar and status bar show the folder and branch once loaded.</li>
+    <li><b>4 Closure:</b> the flow ends in a loaded workspace with a prompt to select a file.</li>
+    <li><b>5 Error handling:</b> a failed open names the cause and offers "Choose another".</li>
+    <li><b>6 Reversal:</b> Cancel in the picker changes nothing; opening another folder is always possible.</li>
+    <li><b>7 User control:</b> the user picks the folder; the app never scans disk on its own.</li>
+    <li><b>8 Memory load:</b> recents remember paths so users need not retype them.</li>
+  </ul></div>
+</div>
+
+<!-- TASK 2 -->
+<h2 id="t2">3.2 Browse files and read code or markdown</h2>
+<p class="sub">Storyboard: 2a Viewer → 2b Find. Select files in the sidebar tree, scroll, search with Ctrl+F, and flip markdown between raw and preview.</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">2a. Main viewer</div><div class="body" style="grid-template-columns:150px 1fr">
+      <div class="title"><span>Nexis Lens — nexis-lens</span><span>_ □ ✕</span></div>
+      <div class="side">Files | Changes | History<br>▾ src<br>&nbsp;&nbsp;▸ app<br>&nbsp;&nbsp;<b>main.tsx</b><br>README.md<br>package.json</div>
+      <div class="main"><span class="tab on">main.tsx</span><span class="tab">README.md</span><span style="float:right">[Raw|Preview] 100% [−][+]</span>
+        <div class="box" style="min-height:90px">1 import React …<br>2 import App …<br>3 <span class="cursor">▌</span></div></div>
+      <div class="status"><span>main.tsx · TypeScript · Ln 3</span><span>Gestures: off</span></div>
+    </div></div>
+    <div class="frame"><div class="cap">2b. Find in file</div><div class="body">
+      <div class="main"><div class="box">🔍 [ useState_____ ] 3 of 12 &nbsp; ↑ ↓ ✕</div><div class="box">… highlighted matches in context …</div></div>
+    </div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> same tab, toolbar and status bar layout for every file type.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+F, Ctrl+Shift+V, zoom keys.</li>
+    <li><b>3 Feedback:</b> selected file highlighted; match counter "3 of 12".</li>
+    <li><b>4 Closure:</b> toggle shows the new mode label immediately.</li>
+    <li><b>5 Error handling:</b> unreadable or binary files show a message, not a blank pane.</li>
+    <li><b>6 Reversal:</b> Esc closes search; toggle flips back.</li>
+    <li><b>7 User control:</b> the user scrolls and selects; nothing auto-navigates.</li>
+    <li><b>8 Memory load:</b> tree and tabs stay visible; per-tab scroll and zoom are restored.</li>
+  </ul></div>
+</div>
+
+<!-- TASK 3 -->
+<h2 id="t3">3.3 Review a git diff</h2>
+<p class="sub">Storyboard: 3a Changes → 3b History. See working-tree changes or a past commit, step through hunks, and switch unified or split layout.</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">3a. Changes tab, split diff</div><div class="body" style="grid-template-columns:150px 1fr">
+      <div class="title"><span>Nexis Lens — nexis-lens</span><span>_ □ ✕</span></div>
+      <div class="side">Files | <b>Changes</b> | History<br>Staged (1)<br>&nbsp;M api.ts<br>Unstaged (2)<br>&nbsp;<b>M main.tsx</b><br>&nbsp;? notes.md</div>
+      <div class="main"><span style="float:right">Hunk 2/5 &nbsp; [Unified|<b>Split</b>] ] [</span><br>
+        <div class="grid4" style="grid-template-columns:1fr 1fr"><div class="box del">− const a = 1</div><div class="box add">+ const a = 2</div><div class="box">  unchanged</div><div class="box">  unchanged</div></div></div>
+      <div class="status"><span>+12 −4 · 2 files</span><span>Gestures: on · swipe ↕ hunks</span></div>
+    </div></div>
+    <div class="frame"><div class="cap">3b. History list</div><div class="body"><div class="main">
+      <div class="box">a1f3 Add hand tracking · 2d ago</div><div class="box">9b20 Fix welcome screen · 3d ago</div></div></div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> add is green with +, remove is red with − (never colour alone).</li>
+    <li><b>2 Shortcuts:</b> <code>]</code> and <code>[</code> for hunks, Ctrl+Shift+U for layout.</li>
+    <li><b>3 Feedback:</b> "Hunk 2/5" counter and +/− totals.</li>
+    <li><b>4 Closure:</b> reaching the last hunk shows "end of changes".</li>
+    <li><b>5 Error handling:</b> not a git repo shows a clear empty state.</li>
+    <li><b>6 Reversal:</b> read-only view, so nothing destructive; layout toggle is reversible.</li>
+    <li><b>7 User control:</b> user chooses file, commit and layout.</li>
+    <li><b>8 Memory load:</b> status bar lists the active gesture hints.</li>
+  </ul></div>
+</div>
+
+<!-- TASK 4 -->
+<h2 id="t4">3.4 Switch tabs and use the session overview</h2>
+<p class="sub">Move between open items, or open the overview grid to jump to any tab.</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">4a. Overview (Ctrl+G)</div><div class="body"><div class="main">
+      <div class="grid4"><div class="box">main.tsx</div><div class="box" style="outline:2px solid var(--ring)">README.md ◂</div><div class="box">diff api.ts</div><div class="box">App.tsx</div></div>
+      <p style="color:var(--muted-foreground)">←→↑↓ move · Enter open · Esc close</p></div></div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> same selection highlight as the file tree.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+Tab, Ctrl+G, arrows.</li>
+    <li><b>3 Feedback:</b> accent outline follows focus.</li>
+    <li><b>4 Closure:</b> Enter closes overview on the chosen tab.</li>
+    <li><b>5 Error handling:</b> empty session shows "Nothing open yet".</li>
+    <li><b>6 Reversal:</b> Esc returns to the previous tab.</li>
+    <li><b>7 User control:</b> opened only on request.</li>
+    <li><b>8 Memory load:</b> thumbnails recognise tabs without recall.</li>
+  </ul></div>
+</div>
+
+<!-- TASK 5 -->
+<h2 id="t5">3.5 Zoom and present</h2>
+<p class="sub">Scale content for a room and enter presentation mode with chrome hidden.</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">5. Presentation mode (F5)</div><div class="body"><div class="main">
+      <div class="box" style="min-height:90px;font-size:15px">Large code, no sidebar or toolbar</div>
+      <div style="text-align:right;color:var(--muted-foreground)">150% · Esc to exit</div></div></div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> zoom keys work identically on all viewers.</li>
+    <li><b>2 Shortcuts:</b> F5, Ctrl+= / − / 0, Ctrl+9 fit.</li>
+    <li><b>3 Feedback:</b> zoom percentage shown briefly.</li>
+    <li><b>4 Closure:</b> entering and leaving fullscreen is explicit.</li>
+    <li><b>5 Error handling:</b> zoom is clamped to a min and max.</li>
+    <li><b>6 Reversal:</b> Esc exits; Ctrl+0 resets.</li>
+    <li><b>7 User control:</b> nothing enters presentation on its own.</li>
+    <li><b>8 Memory load:</b> "Esc to exit" hint is always visible.</li>
+  </ul></div>
+</div>
+
+<!-- TASK 6 -->
+<h2 id="t6">3.6 Enable and calibrate gestures</h2>
+<p class="sub">Storyboard: 6a Settings → 6b Armed HUD. Turn on the camera layer, drag the tracking box, and arm gestures before use.</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">6a. Settings → Camera</div><div class="body" style="grid-template-columns:130px 1fr">
+      <div class="side">General<br><b>Camera</b><br>Gestures<br>Gesture lab</div>
+      <div class="main"><div class="box" style="min-height:80px">[ live preview ]<br>┌─ tracking box ─┐ drag</div>
+        <div class="box">Camera [ Integrated ▾ ] &nbsp; 30 fps ✓</div><span class="btn fill">Enable gestures</span></div>
+    </div></div>
+    <div class="frame"><div class="cap">6b. Gesture HUD (armed)</div><div class="body"><div class="main">
+      <div class="box add">● Armed · palm scroll · swipe tabs</div><div class="box">No hand detected? Step into the box.</div></div></div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> settings pages share one sidebar and control style.</li>
+    <li><b>2 Shortcuts:</b> Ctrl+, opens settings.</li>
+    <li><b>3 Feedback:</b> live preview, fps check, HUD state.</li>
+    <li><b>4 Closure:</b> "Armed" confirms gestures are live.</li>
+    <li><b>5 Error handling:</b> camera denied or under 30 fps explains the fix.</li>
+    <li><b>6 Reversal:</b> auto-disarm and an off switch; the simulator tests safely.</li>
+    <li><b>7 User control:</b> opt-in; gestures never override keyboard or mouse.</li>
+    <li><b>8 Memory load:</b> bindings table lists every gesture.</li>
+  </ul></div>
+</div>
+
+<!-- TASK 7 -->
+<h2 id="t7">3.7 Benchmark tracking in the Gesture lab</h2>
+<p class="sub">Run a 10 second test to see fps, latency and detection rate, then copy the results.</p>
+<div class="task">
+  <div class="frames">
+    <div class="frame"><div class="cap">7. Gesture lab</div><div class="body"><div class="main">
+      <div class="box" style="min-height:70px">[ camera + hand skeleton overlay ]</div>
+      <div class="box">fps 30/29 · p50 11ms · p95 19ms · detection 96%</div>
+      <span class="btn fill">Run 10 s</span><span class="btn">Copy as Markdown</span></div></div></div>
+  </div>
+  <div class="rules"><h3>Eight Golden Rules</h3><ul>
+    <li><b>1 Consistency:</b> same card style as other settings pages.</li>
+    <li><b>2 Shortcuts:</b> reachable from Ctrl+, then one click.</li>
+    <li><b>3 Feedback:</b> live metrics and an overlay while running.</li>
+    <li><b>4 Closure:</b> a summary appears when the 10 s run ends.</li>
+    <li><b>5 Error handling:</b> a missing camera is reported before the run.</li>
+    <li><b>6 Reversal:</b> Stop ends a run early.</li>
+    <li><b>7 User control:</b> the user starts and stops it.</li>
+    <li><b>8 Memory load:</b> one Markdown copy replaces note-taking.</li>
+  </ul></div>
+</div>
+<h2 id="t8">3.8 Gesture design</h2>
+<p class="sub">The gesture set is a design decision, not just a recogniser setting. The choices below follow the research summarised here, and every gesture still has a keyboard equivalent.</p>
+<div class="rules"><h3>What the research says, and what we do about it</h3><ul>
+  <li><b>Midas touch (every movement becomes a command).</b> Gesture interfaces need a way to separate intent from idle movement; the Gunslinger work <a href="#ref1">[1]</a> evaluates this directly. <i>Decision:</i> a deliberate arm step (hold an open palm), auto-disarm, and a cooldown on discrete gestures.</li>
+  <li><b>Gorilla arm (fatigue from holding the arm out).</b> One paper <a href="#ref2">[2]</a> calls it a major barrier to long-term use. Gunslinger <a href="#ref1">[1]</a> uses an arms-down stance, and an elbow-anchored design <a href="#ref3">[3]</a> reports that people favour elbow and wrist motion. <i>Decision:</i> small movements in a draggable tracking box, relative (not absolute) palm motion, gestures meant for short bursts, and keyboard and mouse as the default.</li>
+  <li><b>Visible feedback.</b> Gunslinger <a href="#ref1">[1]</a> shows a hand cursor that communicates posture, mode and tracking quality. <i>Decision:</i> the HUD shows armed state, the recognised gesture and tracking quality, and the tracking overlay can draw the hand skeleton.</li>
+  <li><b>Choose gestures people guess.</b> Wobbrock's guessability method <a href="#ref4">[4]</a> shows users an effect, asks them to perform the cause, and keeps gestures many people agree on. <i>Decision:</i> familiar metaphors (drag the page, pinch to zoom, swipe to turn).</li>
+  <li><b>Camera limits.</b> Webcam studies report accuracy falling with distance, dim light and cluttered backgrounds (for example <a href="#ref5">[5]</a>). <i>Decision:</i> target about 2 m, show a frame-rate check in Settings, and treat false positives as worse than misses.</li>
+</ul></div>
+<p class="sub" style="margin-top:20px">Proposed gesture set (matches the current bindings table).</p>
+<svg width="0" height="0" style="position:absolute"><defs><marker id="ah" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="var(--ring)"/></marker></defs></svg><div class="gcards"><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Arm: hold open palm" style="color:var(--foreground)"><g transform="translate(32,6) scale(0.85)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><circle cx="60" cy="40" r="32" fill="none" stroke="var(--ring)" stroke-width="2" stroke-dasharray="4 4"/></svg><b>Arm: hold open palm</b><span>Turns gestures on</span><em>Everywhere</em><small class="why">Why: a deliberate start avoids Midas touch <a href="#ref1">[1]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Open palm, move" style="color:var(--foreground)"><g transform="translate(30,12) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M100 62 L100 22" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Open palm, move</b><span>Scroll (drag the page)</span><em>Code, Markdown, Diff</em><small class="why">Why: drag-the-page is a familiar direct-manipulation metaphor <a href="#ref4">[4]</a>; small hand motion limits fatigue <a href="#ref3">[3]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Pinch in / out" style="color:var(--foreground)"><g transform="translate(26,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="14" width="8" height="26" rx="4"/><rect x="21" y="24" width="8" height="16" rx="4"/><rect x="31" y="26" width="8" height="14" rx="4"/><rect x="41" y="28" width="8" height="12" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><circle cx="36" cy="30" r="4" fill="var(--ring)"/><path d="M76 30 L98 12" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Pinch in / out</b><span>Zoom at the hand</span><em>Code, Markdown, Diff</em><small class="why">Why: borrowed from touch gestures people already know <a href="#ref4">[4]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Swipe left / right" style="color:var(--foreground)"><g transform="translate(35,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M26 40 L6 40" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/><path d="M94 40 L114 40" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Swipe left / right</b><span>Next / previous tab</span><em>All views</em><small class="why">Why: a quick wrist flick, not a held arm <a href="#ref2">[2]</a><a href="#ref3">[3]</a>; page-turn metaphor <a href="#ref4">[4]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Swipe up / down" style="color:var(--foreground)"><g transform="translate(35,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M20 50 L20 14" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/><path d="M100 30 L100 66" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Swipe up / down</b><span>Next / prev hunk, or page</span><em>Diff; Code, Markdown</em><small class="why">Why: same wrist flick as left/right, so one rule covers all swipes <a href="#ref3">[3]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Closed fist" style="color:var(--foreground)"><g transform="translate(30,12) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="28" width="8" height="12" rx="4"/><rect x="21" y="28" width="8" height="12" rx="4"/><rect x="31" y="28" width="8" height="12" rx="4"/><rect x="41" y="28" width="8" height="12" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g></svg><b>Closed fist</b><span>Unified / split diff</span><em>Diff</em><small class="why">Why: untested. No source here backs it; the guessability test <a href="#ref4">[4]</a> will decide.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Flat-hand flip" style="color:var(--foreground)"><g transform="translate(30,22) scale(0.85)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M22 24 A38 38 0 0 1 98 24" fill="none" stroke="var(--ring)" stroke-width="2" marker-end="url(#ah)"/></svg><b>Flat-hand flip</b><span>Raw / preview</span><em>Markdown</em><small class="why">Why: untested. Kept only if the guessability test <a href="#ref4">[4]</a> supports it.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Two-hand spread" style="color:var(--foreground)"><g transform="translate(-2,14) scale(0.8)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><g transform="translate(74,14) scale(0.8)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="8" width="8" height="32" rx="4"/><rect x="31" y="10" width="8" height="30" rx="4"/><rect x="41" y="16" width="8" height="24" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><path d="M50 44 L38 44" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/><path d="M70 44 L82 44" stroke="var(--ring)" stroke-width="2" fill="none" marker-end="url(#ah)"/></svg><b>Two-hand spread</b><span>Session overview</span><em>Everywhere</em><small class="why">Why: spread means "see more" in touch <a href="#ref4">[4]</a>; rare on purpose since two raised arms tire <a href="#ref2">[2]</a>.</small></div><div class="gcard"><svg viewBox="0 0 120 80" width="100%" height="80" role="img" aria-label="Point, then pinch or hold" style="color:var(--foreground)"><g transform="translate(30,10) scale(1.0)" fill="var(--muted)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="10" y="34" width="40" height="28" rx="9"/><rect x="11" y="12" width="8" height="28" rx="4"/><rect x="21" y="26" width="8" height="14" rx="4"/><rect x="31" y="26" width="8" height="14" rx="4"/><rect x="41" y="26" width="8" height="14" rx="4"/><rect x="2" y="38" width="16" height="8" rx="4" transform="rotate(-30 10 42)"/></g><circle cx="41" cy="22" r="5" fill="none" stroke="var(--ring)" stroke-width="2"/></svg><b>Point, then pinch or hold</b><span>Pick a tab, select it</span><em>Overview</em><small class="why">Why: pointing and selecting was studied in Gunslinger <a href="#ref1">[1]</a>.</small></div></div>
+<h3 style="margin-top:20px">Arming flow</h3>
+<svg viewBox="0 0 640 124" width="100%" role="img" aria-label="Arming state machine" style="max-width:640px;color:var(--foreground)">
+<g font-family="var(--font-sans)" font-size="12" fill="currentColor" stroke="currentColor" stroke-width="1.4">
+<rect x="10" y="34" width="140" height="48" rx="10" fill="var(--muted)"/><text x="80" y="62" text-anchor="middle" stroke="none">Idle (camera on)</text>
+<rect x="250" y="34" width="140" height="48" rx="10" fill="var(--muted)"/><text x="320" y="62" text-anchor="middle" stroke="none">Arming</text>
+<rect x="490" y="34" width="140" height="48" rx="10" fill="var(--primary)" stroke="var(--primary)"/><text x="560" y="62" text-anchor="middle" stroke="none" style="fill:var(--primary-foreground)">Armed</text>
+<path d="M150 58 H248" fill="none" marker-end="url(#ah)"/><text x="200" y="50" text-anchor="middle" stroke="none" font-size="10">open palm</text>
+<path d="M390 58 H488" fill="none" marker-end="url(#ah)"/><text x="440" y="50" text-anchor="middle" stroke="none" font-size="10">still for armHoldMs</text>
+<path d="M560 82 V108 H80 V84" fill="none" marker-end="url(#ah)"/><text x="320" y="104" text-anchor="middle" stroke="none" font-size="10">hand gone for a while, or switched off: auto-disarm</text>
+<path d="M320 34 V14 H80 V32" fill="none" marker-end="url(#ah)" stroke-dasharray="3 3"/><text x="200" y="10" text-anchor="middle" stroke="none" font-size="10">hand leaves or moves too early</text>
+</g></svg>
+<h3 style="margin-top:20px">Camera framing</h3>
+<svg viewBox="0 0 320 180" width="100%" role="img" aria-label="Camera framing" style="max-width:320px;color:var(--foreground)">
+<rect x="6" y="6" width="308" height="168" rx="10" fill="var(--muted)" stroke="var(--border)"/>
+<rect x="60" y="34" width="200" height="110" rx="8" fill="none" stroke="var(--ring)" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="160" y="26" text-anchor="middle" font-size="11" fill="currentColor" font-family="var(--font-sans)">Tracking box (drag to fit you)</text>
+<circle cx="160" cy="90" r="9" fill="var(--ring)"/>
+<text x="160" y="162" text-anchor="middle" font-size="10" fill="currentColor" font-family="var(--font-sans)">Elbow rests; small wrist and forearm motions; about 0.5 to 2 m away</text>
+</svg>
+<div class="rules" style="margin-top:20px"><h3>Eight Golden Rules</h3><ul>
+  <li><b>1 Consistency:</b> the same gesture family means the same kind of action (swipe moves between things, pinch scales).</li>
+  <li><b>2 Shortcuts:</b> gestures are accelerators; every action also has a key.</li>
+  <li><b>3 Feedback:</b> the HUD, armed ring and tracking overlay respond to every recognised gesture.</li>
+  <li><b>4 Closure:</b> a short confirmation ("Next hunk") follows each discrete gesture.</li>
+  <li><b>5 Error handling:</b> low confidence is ignored rather than guessed; lost tracking shows a clear message.</li>
+  <li><b>6 Reversal:</b> opposite gestures undo each other (swipe left and right, pinch out and in); the fist toggles back.</li>
+  <li><b>7 User control:</b> the user arms gestures on purpose and can turn them off at any time.</li>
+  <li><b>8 Memory load:</b> nine gestures, each a familiar metaphor, listed in Settings.</li>
+</ul></div>
+<h3 id="refs" style="margin-top:24px">References</h3>
+<ol class="refs">
+  <li id="ref1">Designing Gunslinger: An Intermodal Large Display Interaction (University of Waterloo). Arms-down stance, Midas touch, hand-cursor feedback. <a href="https://uwspace.uwaterloo.ca/handle/10012/9358">link</a></li>
+  <li id="ref2">arXiv 2603.15991. Gorilla arm and Midas touch as barriers to gesture and gaze interfaces. <a href="https://arxiv.org/pdf/2603.15991">link</a></li>
+  <li id="ref3">US patent 11301049, User interface control based on elbow-anchored arm gestures. <a href="https://patents.google.com/patent/US11301049">link</a></li>
+  <li id="ref4">Wobbrock, Morris, Wilson. User-defined gestures for surface computing, CHI 2009 (guessability method). <a href="https://microsoft.com/en-us/research/wp-content/uploads/2009/04/SurfaceGestures_CHI2009.pdf">link</a></li>
+  <li id="ref5">MotionInput v2.0: gesture-based methods for controlling software with a webcam (arXiv 2108.04357). <a href="https://arxiv.org/pdf/2108.04357">link</a></li>
+</ol>
+<h3 style="margin-top:20px">How we will validate it</h3>
+<ul>
+  <li>Run a short guessability test: show 5 to 8 people each outcome (for example "go to the next change") and record the gesture they try; keep the ones most people agree on.</li>
+  <li>Measure fps, latency and detection rate in the Gesture lab on target hardware.</li>
+  <li>Count accidental commands over five minutes of normal presenting (the roadmap's done criterion), and add recorded-landmark tests for each classifier.</li>
+</ul>
+<h2 id="sys">4. Non-interface components</h2>
+<p class="sub">Critical system pieces behind the screens, and how each is implemented.</p>
+<div class="rules"><ul>
+  <li><b>Shell and backend:</b> Tauri v2 app (Rust backend, React 19 + TypeScript front end). Typed IPC calls connect the two; a browser-only mode serves an in-memory demo workspace.</li>
+  <li><b>Files:</b> the Rust backend opens folders, lists files respecting .gitignore, and reads file contents on request.</li>
+  <li><b>Git:</b> the backend runs the git CLI for status, diff, log and show; the front end parses unified diffs for the unified and split views.</li>
+  <li><b>Command bus:</b> keyboard, toolbar and gestures all call <code>runCommand(id, args, source)</code>; the active view handles it. This is why every task works without a camera.</li>
+  <li><b>Gesture pipeline:</b> camera → MediaPipe HandLandmarker (WASM and model bundled under <code>public/mediapipe/</code>, no CDN, works offline) → recognizer (landmarks to poses to gestures) → dispatcher (confidence floor, arming, auto-disarm, cooldown) → bindings → command bus.</li>
+  <li><b>Performance plan:</b> target at least 30 fps on an 8 GB integrated-GPU laptop. Profile in the Gesture lab; if short, drop to 480p, skip frames, or move inference to a worker with OffscreenCanvas.</li>
+  <li><b>Privacy and permissions:</b> camera video is processed on-device and never uploaded; macOS builds include the camera entitlement and usage description.</li>
+  <li><b>Distribution:</b> GitHub Actions builds Windows (NSIS/MSI) and macOS (universal dmg) installers from version tags.</li>
+</ul></div>
+</main>
+</body>
+</html>
