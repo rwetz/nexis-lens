@@ -44,6 +44,13 @@ export interface CommandArgs {
   "settings.open": void;
   "gestures.toggle": void;
   "present.toggle": void;
+  /** Gesture File mode: hand the gestures to the sidebar list. */
+  "picker.open": void;
+  /** Move the File-mode highlight by whole rows, or by accumulated hand travel (`dy`, framing-box units). */
+  "picker.move": { steps?: number; dy?: number };
+  "picker.choose": void;
+  /** Leave File mode and return to the file it was entered from. */
+  "picker.cancel": void;
 }
 
 export type CommandId = keyof CommandArgs;
@@ -90,6 +97,10 @@ export const COMMAND_TITLES: Record<CommandId, string> = {
   "settings.open": "Settings",
   "gestures.toggle": "Toggle gesture mode",
   "present.toggle": "Presentation mode",
+  "picker.open": "File mode",
+  "picker.move": "Move highlight",
+  "picker.choose": "Open file",
+  "picker.cancel": "Back to file",
 };
 
 const handlers = new Map<CommandId, CommandHandler<CommandId>[]>();

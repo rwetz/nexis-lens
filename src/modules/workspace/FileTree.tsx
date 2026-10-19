@@ -30,7 +30,7 @@ function DirNode({ path, name, depth }: { path: string; name: string; depth: num
   const toggle = useWorkspace((s) => s.toggleDir);
   return (
     <div role="treeitem" aria-expanded={open}>
-      <Row depth={depth} onClick={() => toggle(path)}>
+      <Row depth={depth} onClick={() => toggle(path)} pick="nav">
         <HugeiconsIcon icon={ArrowRight01Icon} size={12} className={cn("shrink-0 text-muted-foreground transition-transform", open && "rotate-90")} />
         <HugeiconsIcon icon={open ? FolderOpenIcon : Folder01Icon} size={14} className="shrink-0 text-muted-foreground" />
         <span className="truncate">{name}</span>
@@ -44,7 +44,7 @@ function FileNode({ path, name, depth }: { path: string; name: string; depth: nu
   const active = useTabs((s) => s.activeId === `file:${path}`);
   const open = useTabs((s) => s.open);
   return (
-    <Row depth={depth} active={active} onClick={() => open({ kind: "file", path })} title={path}>
+    <Row depth={depth} active={active} onClick={() => open({ kind: "file", path })} title={path} pick="item">
       <span className="w-3 shrink-0" />
       <HugeiconsIcon icon={File01Icon} size={14} className="shrink-0 text-muted-foreground" />
       <span className="truncate">{name}</span>
@@ -57,12 +57,15 @@ function Row({
   active,
   onClick,
   title,
+  pick,
   children,
 }: {
   depth: number;
   active?: boolean;
   onClick: () => void;
   title?: string;
+  /** Gesture File mode: "item" opens something, "nav" only changes the list. */
+  pick: "item" | "nav";
   children: React.ReactNode;
 }) {
   return (
@@ -70,6 +73,8 @@ function Row({
       type="button"
       title={title}
       onClick={onClick}
+      data-pick={pick}
+      data-pick-active={active || undefined}
       style={{ paddingLeft: 8 + depth * 14 }}
       className={cn(
         "flex h-7 w-full items-center gap-1.5 rounded-md pr-2 text-left transition-colors",

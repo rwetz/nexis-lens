@@ -2,6 +2,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { IN_TAURI, pickFolder } from "@/lib/ipc";
 import { useCommand } from "@/modules/commands/useCommand";
+import { cancelFileMode, chooseHighlighted, moveHighlight, openFileMode } from "@/modules/gestures/picker";
 import { useTabs } from "@/modules/tabs/store";
 import { invalidateContent } from "@/modules/viewer/content";
 import { useWorkspace } from "@/modules/workspace/store";
@@ -28,6 +29,10 @@ export function useAppCommands() {
     ui.setSidebarOpen(!ui.sidebarOpen);
   });
   useCommand("settings.open", () => useUi.getState().openSettings());
+  useCommand("picker.open", openFileMode);
+  useCommand("picker.move", (args) => moveHighlight(args));
+  useCommand("picker.choose", chooseHighlighted);
+  useCommand("picker.cancel", cancelFileMode);
   useCommand("present.toggle", () => {
     const ui = useUi.getState();
     const next = !ui.presenting;

@@ -245,3 +245,12 @@ tr.lens-line-del .lens-ln {
     inset 0 0 0 2px color-mix(in oklch, var(--brand) 65%, transparent),
     inset 0 0 40px -12px color-mix(in oklch, var(--brand) 55%, transparent);
 }
+
+/* Gesture File mode: the sidebar owns the gestures, and the highlighted row is outlined. */
+.lens-file-mode {
+  box-shadow: inset 0 0 0 2px color-mix(in oklch, var(--brand) 70%, transparent);
+}
+[data-picked] {
+  box-shadow: inset 0 0 0 1.5px var(--brand);
+  background: color-mix(in oklch, var(--brand) 12%, transparent);
+}

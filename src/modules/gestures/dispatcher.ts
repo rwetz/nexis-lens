@@ -8,6 +8,7 @@
 import { runCommand, type CommandId } from "@/modules/commands/registry";
 import { useUi } from "@/modules/shell/uiStore";
 import { currentContext, resolveGesture } from "./bindings";
+import { closeFileMode } from "./picker";
 import { useGestures } from "./store";
 import { DISCRETE, type GestureEvent, type GestureType } from "./types";
 
@@ -24,15 +25,20 @@ function feedback(gesture: GestureType, command: CommandId | null, note?: string
 
 function scheduleDisarm() {
   clearTimeout(disarmTimer);
-  const { requireArming, disarmAfterMs } = useGestures.getState();
+  const { requireArming, disarmAfterMs, mode } = useGestures.getState();
   if (!requireArming) return;
-  disarmTimer = setTimeout(() => setArmed(false), disarmAfterMs);
+  // Reading a file list takes longer than between two scrolls, so File mode waits longer.
+  disarmTimer = setTimeout(() => setArmed(false), mode === "files" ? disarmAfterMs * 3 : disarmAfterMs);
 }
 
 export function setArmed(armed: boolean) {
   useGestures.getState().setRuntime({ armed });
   if (armed) scheduleDisarm();
-  else clearTimeout(disarmTimer);
+  else {
+    clearTimeout(disarmTimer);
+    // Disarming in File mode leaves the highlight where it is and changes nothing.
+    if (useGestures.getState().mode === "files") closeFileMode();
+  }
 }
 
 export function dispatchGesture(e: GestureEvent): void {
@@ -60,7 +66,9 @@ export function dispatchGesture(e: GestureEvent): void {
     return;
   }
 
-  if (st.requireArming && !st.armed) {
+  // Two still open palms are as deliberate as the arming pose, so they arm too.
+  if (e.type === "both-palms" && !st.armed) setArmed(true);
+  else if (st.requireArming && !st.armed) {
     if (discrete) feedback(e.type, null, "Not armed — hold an open palm first");
     return;
   }

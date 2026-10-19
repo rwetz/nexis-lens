@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { dispatchGesture } from "./dispatcher";
 import { useGestures } from "./store";
-import type { Direction, GestureEvent } from "./types";
+import type { GestureEvent } from "./types";
 
 type Payload = GestureEvent extends infer E ? (E extends GestureEvent ? Omit<E, "confidence" | "timestamp"> : never) : never;
 
@@ -20,7 +20,6 @@ export function GestureSimulator() {
   const [confidence, setConfidence] = useState(0.9);
   const drag = useDragControls();
   const constraints = useRef<HTMLDivElement>(null);
-  const lastPoint = useRef(0);
 
   if (!show) return null;
 
@@ -31,8 +30,6 @@ export function GestureSimulator() {
   const burst = (make: (i: number) => Payload, frames = 14, intervalMs = 16) => {
     for (let i = 0; i < frames; i++) setTimeout(() => emit(make(i)), i * intervalMs);
   };
-
-  const swipe = (direction: Direction) => emit({ type: "swipe", direction, velocity: 2.5 });
 
   return (
     <div ref={constraints} className="pointer-events-none fixed inset-2 z-50">
@@ -65,43 +62,19 @@ export function GestureSimulator() {
             <Btn onClick={() => emit({ type: "arm" })}>Arm</Btn>
             <Btn onClick={() => emit({ type: "disarm" })}>Disarm</Btn>
           </Row>
-          <Row label="Swipe">
-            <Btn onClick={() => swipe("left")}>←</Btn>
-            <Btn onClick={() => swipe("right")}>→</Btn>
-            <Btn onClick={() => swipe("up")}>↑</Btn>
-            <Btn onClick={() => swipe("down")}>↓</Btn>
+          <Row label="Drag">
+            <Btn onClick={() => burst(() => ({ type: "pinch-drag", dx: 0, dy: -0.012 }))}>Raise</Btn>
+            <Btn onClick={() => burst(() => ({ type: "pinch-drag", dx: 0, dy: 0.012 }))}>Lower</Btn>
           </Row>
-          <Row label="Palm">
-            <Btn onClick={() => burst(() => ({ type: "palm-move", dx: 0, dy: -0.012 }))}>Raise</Btn>
-            <Btn onClick={() => burst(() => ({ type: "palm-move", dx: 0, dy: 0.012 }))}>Lower</Btn>
-          </Row>
-          <Row label="Pinch">
-            <Btn onClick={() => burst(() => ({ type: "pinch", scale: 1.025, center: { x: 0.5, y: 0.4 } }))}>Spread</Btn>
-            <Btn onClick={() => burst(() => ({ type: "pinch", scale: 1 / 1.025, center: { x: 0.5, y: 0.4 } }))}>Close</Btn>
+          <Row label="Zoom">
+            <Btn onClick={() => burst(() => ({ type: "two-hand-pinch", scale: 1.025, center: { x: 0.5, y: 0.4 } }))}>Apart</Btn>
+            <Btn onClick={() => burst(() => ({ type: "two-hand-pinch", scale: 1 / 1.025, center: { x: 0.5, y: 0.4 } }))}>Together</Btn>
           </Row>
           <Row label="Pose">
-            <Btn onClick={() => emit({ type: "fist" })}>Fist</Btn>
             <Btn onClick={() => emit({ type: "palm-flip" })}>Flip</Btn>
-            <Btn onClick={() => emit({ type: "two-hand-spread" })}>Spread ×2</Btn>
+            <Btn onClick={() => emit({ type: "both-palms" })}>Both palms</Btn>
+            <Btn onClick={() => emit({ type: "grab" })}>Grab</Btn>
           </Row>
-
-          <div>
-            <div className="mb-1 flex items-center justify-between text-muted-foreground">
-              <span>Point pad (camera frame)</span>
-              <Btn onClick={() => emit({ type: "select" })}>Select</Btn>
-            </div>
-            <div
-              className="relative h-24 cursor-crosshair rounded-lg border border-dashed border-border bg-muted/40"
-              onPointerMove={(e) => {
-                const now = performance.now();
-                if (now - lastPoint.current < 33) return; // ~30 Hz, like a camera
-                lastPoint.current = now;
-                const r = e.currentTarget.getBoundingClientRect();
-                emit({ type: "point", at: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
-              }}
-              onClick={() => emit({ type: "select" })}
-            />
-          </div>
 
           <div>
             <div className="mb-1.5 flex justify-between text-muted-foreground">

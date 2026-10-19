@@ -18,10 +18,12 @@ A small workspace served from memory so the viewer runs in a browser.
 
 | Gesture | Action |
 | --- | --- |
-| Open palm, vertical | Scroll |
-| Pinch | Zoom |
-| Swipe left / right | Switch tab |
-| Fist | Unified / split diff |
+| Hold an open palm | Arm gestures |
+| Pinch and drag | Scroll |
+| Pinch with both hands, pull apart | Zoom |
+| Turn the hand over | Raw / preview (markdown) |
+| Show both palms | File mode: pick another file |
+| Open hand, then close it | Open the highlighted file |
 
 \`\`\`ts
 export function clamp(v: number, lo: number, hi: number) {

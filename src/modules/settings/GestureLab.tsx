@@ -22,7 +22,7 @@ import { SectionTitle } from "./SettingsDialog";
 
 const WINDOW = 180; // frames kept for live stats and the timeline
 const RUN_MS = 10_000;
-const CONTINUOUS: ReadonlySet<GestureType> = new Set(["palm-move", "pinch", "point"]);
+const CONTINUOUS: ReadonlySet<GestureType> = new Set(["palm-move", "pinch", "point", "pinch-drag", "two-hand-pinch"]);
 
 type Sample = Pick<PipelineFrame, "t" | "inferenceMs" | "latencyMs" | "dropped"> & { hands: number; confidence: number };
 type LogEntry = { key: number; at: number; text: string };

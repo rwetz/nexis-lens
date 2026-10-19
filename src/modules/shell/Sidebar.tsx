@@ -4,6 +4,7 @@ import { RefreshIcon } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { ChangesPanel } from "@/modules/workspace/ChangesPanel";
 import { FileTree } from "@/modules/workspace/FileTree";
+import { useGestures } from "@/modules/gestures/store";
 import { useWorkspace } from "@/modules/workspace/store";
 import { ToolButton } from "@/modules/viewer/ViewerToolbar";
 import { useUi, type SidebarTab } from "./uiStore";
@@ -15,6 +16,7 @@ export function Sidebar() {
   const setWidth = useUi((s) => s.setSidebarWidth);
   const changes = useWorkspace((s) => s.changes.length);
   const loading = useWorkspace((s) => s.loading);
+  const fileMode = useGestures((s) => s.mode === "files");
   const startX = useRef(0);
   const startW = useRef(0);
 
@@ -33,7 +35,10 @@ export function Sidebar() {
   };
 
   return (
-    <aside style={{ width }} className="relative flex shrink-0 flex-col border-r border-border/60 bg-sidebar">
+    <aside
+      style={{ width }}
+      className={cn("relative flex shrink-0 flex-col border-r border-border/60 bg-sidebar", fileMode && "lens-file-mode")}
+    >
       <div className="flex h-9 shrink-0 items-center gap-1 border-b border-border/60 px-2">
         <TabButton id="files" current={tab} onSelect={setTab}>Files</TabButton>
         <TabButton id="changes" current={tab} onSelect={setTab}>
@@ -73,6 +78,7 @@ function TabButton({
       type="button"
       role="tab"
       aria-selected={current === id}
+      data-pick="nav"
       onClick={() => onSelect(id)}
       className={cn(
         "flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors",

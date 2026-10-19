@@ -1,28 +1,31 @@
 // Gesture → command bindings, by context.
 //
-// The same physical gesture means different things in different places — a
-// vertical swipe jumps hunks in a diff but pages through a document — so a
-// binding is (gesture, contexts) → command. The table is data so Settings can
-// show it and a future editor can let users rebind.
+// Gestures are locked to one target at a time. In Focus mode they act only on
+// the open file (scroll, zoom, and Raw / Preview in markdown), so no gesture
+// can change files by accident. Showing both palms switches to File mode,
+// where they act only on the sidebar list (./picker.ts). A binding is
+// (gesture, contexts) → command; the table is data so Settings can show it.
 import type { CommandArgs, CommandId } from "@/modules/commands/registry";
 import { isMarkdownPath } from "@/lib/path";
 import { useTabs } from "@/modules/tabs/store";
 import { useUi } from "@/modules/shell/uiStore";
-import type { GestureConfig } from "./store";
-import type { Direction, GestureEvent, GestureType, Point } from "./types";
+import { useGestures, type GestureConfig } from "./store";
+import type { GestureEvent, GestureType, Point } from "./types";
 
-export type GestureContext = "overview" | "diff" | "markdown" | "code" | "empty";
+export type GestureContext = "files" | "diff" | "markdown" | "code" | "empty";
 
 export const CONTEXT_LABELS: Record<GestureContext, string> = {
-  overview: "Overview",
+  files: "File mode",
   diff: "Diff",
   markdown: "Markdown",
   code: "Code",
   empty: "No tab",
 };
 
-export function currentContext(): GestureContext {
-  if (useUi.getState().overviewOpen) return "overview";
+/** Overview and other overlays take no gestures: they return null. */
+export function currentContext(): GestureContext | null {
+  if (useGestures.getState().mode === "files") return "files";
+  if (useUi.getState().overviewOpen) return null;
   const { tabs, activeId } = useTabs.getState();
   const tab = tabs.find((t) => t.id === activeId);
   if (!tab) return "empty";
@@ -36,7 +39,6 @@ export type GestureBinding = {
   /** Display name of the physical gesture. */
   label: string;
   type: GestureType;
-  direction?: Direction;
   contexts: GestureContext[];
   resolve: (e: GestureEvent, cfg: GestureConfig) => Resolved;
 };
@@ -50,70 +52,40 @@ export function frameToViewport(p: Point, cfg: GestureConfig): Point {
   return { x: clamp((p.x - f.x) / f.w), y: clamp((p.y - f.y) / f.h) };
 }
 
-const swipe = (direction: Direction, contexts: GestureContext[], r: () => Resolved): GestureBinding => ({
-  label: `Swipe ${direction}`,
-  type: "swipe",
-  direction,
-  contexts,
-  resolve: r,
-});
-
 export const GESTURE_BINDINGS: GestureBinding[] = [
   {
-    label: "Open palm, move vertically",
-    type: "palm-move",
+    label: "Pinch and drag",
+    type: "pinch-drag",
     contexts: VIEWS,
     // Drag-the-page metaphor: raising the hand moves the content up.
     resolve: (e, cfg) => ({
       command: "view.scroll",
-      args: { dy: e.type === "palm-move" ? -e.dy * cfg.scrollGain * window.innerHeight : 0 },
+      args: { dy: e.type === "pinch-drag" ? -e.dy * cfg.scrollGain * window.innerHeight : 0 },
     }),
   },
   {
-    label: "Pinch in / out",
-    type: "pinch",
+    label: "Pinch with both hands, pull apart / together",
+    type: "two-hand-pinch",
     contexts: VIEWS,
     resolve: (e, cfg) =>
-      e.type === "pinch"
+      e.type === "two-hand-pinch"
         ? { command: "view.zoom", args: { factor: Math.pow(e.scale, cfg.pinchGain), focus: frameToViewport(e.center, cfg) } }
         : { command: "view.zoom", args: { factor: 1 } },
   },
-  swipe("left", ["diff", "markdown", "code", "empty"], () => ({ command: "tabs.next" })),
-  swipe("right", ["diff", "markdown", "code", "empty"], () => ({ command: "tabs.prev" })),
-  swipe("up", ["diff"], () => ({ command: "diff.nextHunk" })),
-  swipe("down", ["diff"], () => ({ command: "diff.prevHunk" })),
-  swipe("up", ["markdown", "code"], () => ({ command: "view.scroll", args: { pages: 0.85, smooth: true } })),
-  swipe("down", ["markdown", "code"], () => ({ command: "view.scroll", args: { pages: -0.85, smooth: true } })),
-  swipe("left", ["overview"], () => ({ command: "overview.move", args: { dx: 1, dy: 0 } })),
-  swipe("right", ["overview"], () => ({ command: "overview.move", args: { dx: -1, dy: 0 } })),
-  swipe("up", ["overview"], () => ({ command: "overview.move", args: { dx: 0, dy: -1 } })),
-  swipe("down", ["overview"], () => ({ command: "overview.move", args: { dx: 0, dy: 1 } })),
-  { label: "Closed fist", type: "fist", contexts: ["diff"], resolve: () => ({ command: "diff.toggleLayout" }) },
-  { label: "Flat-hand flip", type: "palm-flip", contexts: ["markdown"], resolve: () => ({ command: "markdown.toggleMode" }) },
+  { label: "Turn the hand over", type: "palm-flip", contexts: ["markdown"], resolve: () => ({ command: "markdown.toggleMode" }) },
+  { label: "Show both palms", type: "both-palms", contexts: [...VIEWS, "empty"], resolve: () => ({ command: "picker.open" }) },
   {
-    label: "Two-hand spread",
-    type: "two-hand-spread",
-    contexts: ["diff", "markdown", "code", "empty", "overview"],
-    resolve: () => ({ command: "overview.toggle" }),
+    label: "Pinch and drag",
+    type: "pinch-drag",
+    contexts: ["files"],
+    resolve: (e) => ({ command: "picker.move", args: { dy: e.type === "pinch-drag" ? e.dy : 0 } }),
   },
-  {
-    label: "Point",
-    type: "point",
-    contexts: ["overview"],
-    resolve: (e, cfg) => ({
-      command: "overview.pointAt",
-      args: e.type === "point" ? frameToViewport(e.at, cfg) : { x: 0.5, y: 0.5 },
-    }),
-  },
-  { label: "Pinch or hold", type: "select", contexts: ["overview"], resolve: () => ({ command: "overview.select" }) },
+  { label: "Open hand, then close it", type: "grab", contexts: ["files"], resolve: () => ({ command: "picker.choose" }) },
+  { label: "Show both palms", type: "both-palms", contexts: ["files"], resolve: () => ({ command: "picker.cancel" }) },
 ];
 
-export function resolveGesture(e: GestureEvent, ctx: GestureContext, cfg: GestureConfig): Resolved | null {
-  const b = GESTURE_BINDINGS.find(
-    (b) =>
-      b.type === e.type &&
-      b.contexts.includes(ctx) &&
-      (b.direction === undefined || (e.type === "swipe" && e.direction === b.direction)),
-  );
+export function resolveGesture(e: GestureEvent, ctx: GestureContext | null, cfg: GestureConfig): Resolved | null {
+  if (!ctx) return null;
+  const b = GESTURE_BINDINGS.find((b) => b.type === e.type && b.contexts.includes(ctx));
   return b ? b.resolve(e, cfg) : null;
 }
