@@ -27,10 +27,17 @@ High-fidelity mock-ups drawn to match the running app (dark theme). Multi-step t
 
 Storyboard: 1a Welcome → 1b Pick folder → 1c Workspace loaded (or 1d Error).
 
-| | |
-|---|---|
-| **1a.** Welcome screen (every launch starts here) ![1a](design/mockups/1a.png) | **1b.** Native folder picker ![1b](design/mockups/1b.png) |
-| **1c.** Workspace loaded, nothing open yet ![1c](design/mockups/1c.png) | **1d.** Error: the folder could not be opened ![1d](design/mockups/1d.png) |
+**1a.** Welcome screen (every launch starts here)
+![1a](design/mockups/1a.png)
+
+**1b.** Native folder picker
+![1b](design/mockups/1b.png)
+
+**1c.** Workspace loaded, nothing open yet
+![1c](design/mockups/1c.png)
+
+**1d.** Error: the folder could not be opened
+![1d](design/mockups/1d.png)
 
 **Eight Golden Rules**
 1. **Consistency:** the one primary action (Open folder) uses the filled button style used for primary actions everywhere.
