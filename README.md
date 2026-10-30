@@ -1,4 +1,19 @@
-# Nexis Lens
+<p align="center">
+  <img src="public/logo.svg" width="128" alt="Nexis Lens logo">
+</p>
+
+<h1 align="center">Nexis Lens</h1>
+
+<p align="center">
+  A gesture-augmented viewer for presenting code, git diffs and markdown.
+</p>
+
+<p align="center">
+  <a href="https://github.com/rwetz/nexis-lens/releases/latest"><img src="https://img.shields.io/github/v/release/rwetz/nexis-lens?color=8DBCE8&labelColor=101319" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-222B36?labelColor=101319" alt="License"></a>
+</p>
+
+<!-- TODO(readme-standard): add docs/main.png, a screenshot of the running app, and reference it here -->
 
 A gesture-augmented viewer for presenting code, git diffs and markdown. Keyboard
 and mouse do everything; hand gestures are an extra layer for when you step
