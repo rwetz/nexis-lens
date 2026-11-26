@@ -45,8 +45,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@nexis/design':
-        specifier: github:rwetz/nexis-design
-        version: https://codeload.github.com/rwetz/nexis-design/tar.gz/28333833a237735012aaf906114725c31bf2185e(@hugeicons/core-free-icons@4.3.5)(@hugeicons/react@1.1.10(react@19.3.0))(@tauri-apps/api@2.12.1)(@tauri-apps/plugin-os@2.4.0)(clsx@2.1.1)(motion@12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwind-merge@3.7.0)
+        specifier: github:rwetz/nexis-design#semver:^0.3.0
+        version: https://codeload.github.com/rwetz/nexis-design/tar.gz/0cb584ba2632e3c995a5e17b021c944fee55b6e9(@codemirror/view@6.43.13)(@fontsource-variable/geist-mono@5.3.0)(@fontsource-variable/inter@5.3.0)(@phosphor-icons/react@2.1.10(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-virtual@3.14.28(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tauri-apps/api@2.12.1)(@tauri-apps/plugin-os@2.4.0)(class-variance-authority@0.7.1)(clsx@2.1.1)(cmdk@1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(motion@12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(ogl@1.0.11)(radix-ui@1.6.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-resizable-panels@4.24.3(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(tailwind-merge@3.7.0)(tailwindcss@4.3.3)(tw-animate-css@1.4.0)
       '@tauri-apps/api':
         specifier: ^2.12.1
         version: 2.12.1
@@ -535,6 +535,9 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
+  '@fontsource-variable/geist-mono@5.3.0':
+    resolution: {integrity: sha512-vBbuwDEo9AkrqADMXOrlAR3DFcJi4/JxeuU43FoiQERnNwsfXNnvxvReZG02cQKmyk4DZkZdBZX3oTDvy2zBAw==}
+
   '@fontsource-variable/inter@5.3.0':
     resolution: {integrity: sha512-OupL48va4JNofb97w6NYeF9S7W/kHNKM0Er8Dem5nqi4jeOLrVJDoE8tZEpnMJmtkvNbB1EIPPwHcdkF6b1oUA==}
 
@@ -645,20 +648,40 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@nexis/design@https://codeload.github.com/rwetz/nexis-design/tar.gz/28333833a237735012aaf906114725c31bf2185e':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/rwetz/nexis-design/tar.gz/28333833a237735012aaf906114725c31bf2185e}
-    version: 0.1.0
+  '@nexis/design@https://codeload.github.com/rwetz/nexis-design/tar.gz/0cb584ba2632e3c995a5e17b021c944fee55b6e9':
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/rwetz/nexis-design/tar.gz/0cb584ba2632e3c995a5e17b021c944fee55b6e9}
+    version: 0.3.0
     hasBin: true
     peerDependencies:
-      '@hugeicons/core-free-icons': ^1.0.13
-      '@hugeicons/react': ^1.0.5
-      '@tauri-apps/api': ^2.6.0
-      '@tauri-apps/plugin-os': ^2.3.0
+      '@codemirror/view': ^6.43.15
+      '@fontsource-variable/geist-mono': ^5.3.0
+      '@fontsource-variable/inter': ^5.3.0
+      '@phosphor-icons/react': ^2.1.10
+      '@tanstack/react-virtual': ^3.14.10
+      '@tauri-apps/api': ^2.12.0
+      '@tauri-apps/plugin-os': ~2.4.0
+      class-variance-authority: ^0.7.1
       clsx: ^2.1.1
-      motion: ^12.19.1
-      react: ^19.0.0
-      react-dom: ^19.0.0
-      tailwind-merge: ^3.3.1
+      cmdk: ^1.1.1
+      motion: ^13.4.0
+      ogl: ^1.0.11
+      radix-ui: ^1.4.3
+      react: ^19.3.0
+      react-dom: ^19.3.0
+      react-resizable-panels: ^4.12.3
+      sonner: ^2.0.7
+      tailwind-merge: ^3.6.0
+      tailwindcss: ^4.3.3
+      tw-animate-css: ^1.4.0
+    peerDependenciesMeta:
+      '@codemirror/view':
+        optional: true
+      '@tauri-apps/api':
+        optional: true
+      '@tauri-apps/plugin-os':
+        optional: true
+      ogl:
+        optional: true
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -674,6 +697,13 @@ packages:
 
   '@oxc-project/types@0.152.0':
     resolution: {integrity: sha512-oM/5rLBm2tPkg0iBgkH/FOeR3PCDpY19GTgAZjMFM8h9WI9VW7cLgzp6nwtarYKmovavIQZ+Fe/RKX/8C8O/Rw==}
+
+  '@phosphor-icons/react@2.1.10':
+    resolution: {integrity: sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8'
+      react-dom: '>= 16.8'
 
   '@radix-ui/number@1.1.3':
     resolution: {integrity: sha512-Road2bidD0uu/1BGDOWNdPI06g0lIRy6IF9GZcIrDK2KGItfor8IQwQa+yM2ERgHM1MmHxaxpTzk0/Jp42lNfA==}
@@ -1707,6 +1737,15 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
+  '@tanstack/react-virtual@3.14.28':
+    resolution: {integrity: sha512-zoM4eddIVUsOsunOe26ur+h6YJQbvdzU10a2tKzIovThu5P4SvEyQ+cRx0mbeKfgnR0Mz7KR/NwrZ3GzVnUF/g==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@tanstack/virtual-core@3.19.13':
+    resolution: {integrity: sha512-CyCvMm7m5JuvPW6eMPZkZBZk6diySrlUQNNRpQPiEnh2vakyghx82Hw3wW2THFUsl6xJ6uM4lSUaiA2T0oYW8w==}
+
   '@tauri-apps/api@2.12.1':
     resolution: {integrity: sha512-DeyFHa3wynpyoqTDikDEDGTJIq4LQ5USfolQGRmGIWT6JMADyxZBTDa5cAdT3tDg73rUXufPaCwN7aXBos4OnQ==}
 
@@ -2167,6 +2206,12 @@ packages:
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
+
+  cmdk@1.1.1:
+    resolution: {integrity: sha512-Vsv7kFaXm+ptHDMZ7izaRsP70GgrW9NBNGswt9OZaVBLlE0SNpDq8eu/VGXyF9r7M0azK3Wy7OlYXsuyYLFzHg==}
+    peerDependencies:
+      react: ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^18 || ^19 || ^19.0.0-rc
 
   cn@0.2.6:
     resolution: {integrity: sha512-+i4L0zUGgRcEnhsxueVrP7iBGxBx5iD0WOTYg1MwFEu2ZyCmH5Ov2V1cul2Ht5UchRQQgftCf4be/RxspuW6QQ==}
@@ -3361,6 +3406,16 @@ packages:
       '@types/react':
         optional: true
 
+  react-resizable-panels@4.24.3:
+    resolution: {integrity: sha512-KagdTE+EJh/BmYqYDgnWGmYP4c9FEo4QKROxaAvI0QiwW3lUClyDvI8saYZLOZl71I0VP8J0e+teRWNUlYRJnA==}
+    peerDependencies:
+      '@types/react': ^18.2.6 || ^19.0.0
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
     engines: {node: '>=10'}
@@ -4479,6 +4534,8 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
+  '@fontsource-variable/geist-mono@5.3.0': {}
+
   '@fontsource-variable/inter@5.3.0': {}
 
   '@fontsource/jetbrains-mono@5.3.0': {}
@@ -4634,17 +4691,29 @@ snapshots:
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
-  '@nexis/design@https://codeload.github.com/rwetz/nexis-design/tar.gz/28333833a237735012aaf906114725c31bf2185e(@hugeicons/core-free-icons@4.3.5)(@hugeicons/react@1.1.10(react@19.3.0))(@tauri-apps/api@2.12.1)(@tauri-apps/plugin-os@2.4.0)(clsx@2.1.1)(motion@12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwind-merge@3.7.0)':
-    dependencies:
-      '@hugeicons/core-free-icons': 4.3.5
-      '@hugeicons/react': 1.1.10(react@19.3.0)
-      '@tauri-apps/api': 2.12.1
-      '@tauri-apps/plugin-os': 2.4.0
+  ? '@nexis/design@https://codeload.github.com/rwetz/nexis-design/tar.gz/0cb584ba2632e3c995a5e17b021c944fee55b6e9(@codemirror/view@6.43.13)(@fontsource-variable/geist-mono@5.3.0)(@fontsource-variable/inter@5.3.0)(@phosphor-icons/react@2.1.10(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tanstack/react-virtual@3.14.28(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@tauri-apps/api@2.12.1)(@tauri-apps/plugin-os@2.4.0)(class-variance-authority@0.7.1)(clsx@2.1.1)(cmdk@1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(motion@12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(ogl@1.0.11)(radix-ui@1.6.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react-resizable-panels@4.24.3(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(sonner@2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(tailwind-merge@3.7.0)(tailwindcss@4.3.3)(tw-animate-css@1.4.0)'
+  : dependencies:
+      '@fontsource-variable/geist-mono': 5.3.0
+      '@fontsource-variable/inter': 5.3.0
+      '@phosphor-icons/react': 2.1.10(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@tanstack/react-virtual': 3.14.28(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      class-variance-authority: 0.7.1
       clsx: 2.1.1
+      cmdk: 1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       motion: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      radix-ui: 1.6.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
+      react-resizable-panels: 4.24.3(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      sonner: 2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       tailwind-merge: 3.7.0
+      tailwindcss: 4.3.3
+      tw-animate-css: 1.4.0
+    optionalDependencies:
+      '@codemirror/view': 6.43.13
+      '@tauri-apps/api': 2.12.1
+      '@tauri-apps/plugin-os': 2.4.0
+      ogl: 1.0.11
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -4659,6 +4728,11 @@ snapshots:
       fastq: 1.20.3
 
   '@oxc-project/types@0.152.0': {}
+
+  '@phosphor-icons/react@2.1.10(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
 
   '@radix-ui/number@1.1.3': {}
 
@@ -5631,6 +5705,14 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.3.2(@types/node@26.6.4)(esbuild@0.28.2)(jiti@2.7.0)
 
+  '@tanstack/react-virtual@3.14.28(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      '@tanstack/virtual-core': 3.19.13
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+
+  '@tanstack/virtual-core@3.19.13': {}
+
   '@tauri-apps/api@2.12.1': {}
 
   '@tauri-apps/cli-darwin-arm64@2.12.1':
@@ -5991,6 +6073,18 @@ snapshots:
   cli-spinners@2.9.2: {}
 
   clsx@2.1.1: {}
+
+  cmdk@1.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+    dependencies:
+      '@radix-ui/react-compose-refs': 1.1.5(@types/react@19.3.0)(react@19.3.0)
+      '@radix-ui/react-dialog': 1.1.23(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-id': 1.1.4(@types/react@19.3.0)(react@19.3.0)
+      '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
 
   cn@0.2.6: {}
 
@@ -7338,6 +7432,13 @@ snapshots:
       tslib: 2.8.1
       use-callback-ref: 1.3.3(@types/react@19.3.0)(react@19.3.0)
       use-sidecar: 1.1.3(@types/react@19.3.0)(react@19.3.0)
+    optionalDependencies:
+      '@types/react': 19.3.0
+
+  react-resizable-panels@4.24.3(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+    dependencies:
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
     optionalDependencies:
       '@types/react': 19.3.0
 
